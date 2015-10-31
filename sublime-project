@@ -1,0 +1,24 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "folder_exclude_patterns": [
+                ".git",
+                "__pycache__",
+                "staticroot"
+            ],
+            "file_exclude_patterns": [
+                "*.pyc",
+                "*.sublime-workspace"
+            ]
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4,
+        "translate_tabs_to_spaces": true,
+        "trim_trailing_white_space_on_save": true,
+        "ensure_newline_at_eof_on_save": true
+    }
+}
