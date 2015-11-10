@@ -12,8 +12,8 @@ Interactive mapping platform for research data visualization
 ### Bootstrap
 
 ```bash
-$ mkvirtualenv sixpm -p `which python3`
+$ mkvirtualenv daat -p `which python3`
 $ pip install -r requirements.txt
-$ createuser -d sixpm && createdb sixpm -O sixpm
+$ createuser -d daat && createdb daat -O daat
 $ ./manage.py migrate
 ```

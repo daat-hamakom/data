@@ -15,6 +15,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'daat.core',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -27,6 +29,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+AUTH_USER_MODEL = 'core.DaatUser'
 
 ROOT_URLCONF = 'daat.urls'
 
