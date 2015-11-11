@@ -42,7 +42,22 @@ class Person(models.Model):
 
 
 class Organization(models.Model):
-    pass
+    name = models.CharField(max_length=150)
+    alt_name = models.CharField(max_length=150, blank=True)
+    description = models.TextField(blank=True)
+    places = ManyToManyField(Place, related_name='organizations')
+    cover_image = models.ForeignKey(Media, blank=True, null=True)
+    start_date = models.CharField(max_length=10, validators=[partial_date_validator])
+    end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        if self.end_date:
+            if self.end_date < self.start_date:
+                raise ValidationError({'end_date': 'End date must occur after start date'})
+
 
 class Event(models.Model):
     MAP_CONTEXTS = (
