@@ -58,4 +58,4 @@ AWS_STORAGE_BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000  # this also enables the HSTS header
+SECURE_HSTS_SECONDS = 86400  # this also enables the HSTS header
