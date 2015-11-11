@@ -8,6 +8,8 @@ from .utils import partial_date_validator
 class DaatUser(AbstractUser):
     pass
 
+def concat_category(i, f):
+    return '{}/{}'.format(i.category, f)
 
 class Media(models.Model):
 
@@ -19,7 +21,7 @@ class Media(models.Model):
         ('photograph', 'Photograph')
     )
 
-    file = models.FileField(upload_to=lambda i, f: '{}/{}'.format(i.category, f))
+    file = models.FileField(upload_to=concat_category)
     title = models.CharField(max_length=120)
     category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
     source = models.CharField(max_length=200, blank=True)
