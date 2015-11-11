@@ -33,8 +33,11 @@ class Media(models.Model):
 
 
 class Researcher(models.Model):
+    title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=150)
+    biography = models.TextField(blank=True)
+    profile_image = models.FileField(upload_to='researcher_profiles', blank=True, null=True)
 
     def __str__(self):
         return '{} {}'.format(first_name, last_name)
