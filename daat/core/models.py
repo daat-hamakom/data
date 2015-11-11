@@ -8,6 +8,7 @@ from .utils import partial_date_validator
 class DaatUser(AbstractUser):
     pass
 
+
 def concat_category(i, f):
     return '{}/{}'.format(i.category, f)
 
@@ -128,3 +129,24 @@ class Event(models.Model):
         if self.end_date:
             if self.end_date < self.start_date:
                 raise ValidationError({'end_date': 'End date must occur after start date'})
+
+
+class Annotation(models.Model):
+    ANNOTATION_TYPES = (
+        ('correspondence', 'Correspondence'),
+        ('group', 'Group'),
+        ('travel', 'Travel'),
+        ('trend', 'Trend')
+    )
+
+    ANNOTATION_LINKS = (
+        ('path', 'Path'),
+        ('correspondence', 'Correspondence'),
+        ('flow', 'Flow')
+    )
+
+    places = models.ManyToManyField(Place, related_name='annotations')
+    events = models.ManyToManyField(Event, related_name='annotations')
+    type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
+    description = models.TextField(blank=True)
+    link_style = models.CharField(max_length=20, choices=ANNOTATION_LINKS)
