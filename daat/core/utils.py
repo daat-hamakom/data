@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 def partial_date_validator(s):
     if not re.match(r'^\d\d\d\d-\d\d-\d\d$', s):
-        raise ValidationError('Date must be in format YYYY-MM-DD')
+        raise ValidationError('Date must be in format YYYY-MM-DD, use 00 for unknowns')
     y, m, d = map(int, s.split('-'))
     if y > 3000:
         raise ValidationError('Invalid year {}'.format(y))
@@ -16,4 +16,4 @@ def partial_date_validator(s):
         try:
             dt = datetime.strptime(s, '%Y-%m-%d')
         except ValueError:
-            raise ValidationError('Date {} is invalid'.format(s))
+            raise ValidationError('Invalid date {}'.format(s))
