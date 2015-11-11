@@ -63,3 +63,6 @@ USE_I18N = False
 USE_L10N = False
 
 USE_TZ = True
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

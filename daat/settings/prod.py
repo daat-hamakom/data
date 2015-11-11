@@ -36,6 +36,8 @@ CACHES = {
     }
 }
 
+CELERY_ALWAYS_EAGER = True
+
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
 STATIC_URL = '/static/'

@@ -15,3 +15,5 @@ DATABASES = {
 
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
 STATIC_URL = '/static/'
+
+CELERY_ALWAYS_EAGER = True
