@@ -16,6 +16,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'geoposition',
+
     'daat.core',
     'daat.maps',
 )

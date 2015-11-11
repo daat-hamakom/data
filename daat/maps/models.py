@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from geoposition.fields import GeopositionField
 
 from .utils import partial_date_validator
 
@@ -56,7 +57,12 @@ class Project(models.Model):
 
 
 class Place(models.Model):
-    pass
+    name = models.CharField(max_length=200)
+    alt_name = models.CharField(max_length=300, blank=True)
+    position = GeopositionField()
+
+    def __str__(self):
+        return self.name
 
 
 class Person(models.Model):
