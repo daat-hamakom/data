@@ -1,2 +1,9 @@
 Django==1.8.5
+dj-database-url==0.3.0
+django-redis-cache==1.6.3
+gunicorn==19.3.0
+hiredis==0.2.0
 psycopg2==2.6.1
+raven==5.8.1
+redis==2.10.5
+whitenoise==2.0.4
