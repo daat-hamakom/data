@@ -9,14 +9,6 @@ class DaatUser(AbstractUser):
     pass
 
 
-class Project(models.Model):
-    pass
-
-
-class Place(models.Model):
-    pass
-
-
 class Media(models.Model):
 
     MEDIA_CATEGORIES = (
@@ -36,6 +28,34 @@ class Media(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Researcher(models.Model):
+    first_name = models.CharField(max_length=120)
+    last_name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return '{} {}'.format(first_name, last_name)
+
+
+class Project(models.Model):
+    title = models.CharField(max_length=150)
+    synopsis = models.TextField(blank=True)
+    cover_image = models.ForeignKey(Media, blank=True, null=True)
+    start_date = models.CharField(max_length=10, validators=[partial_date_validator])
+    end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+
+    def __str__(self):
+        return self.title
+
+    def clean(self):
+        if self.end_date:
+            if self.end_date < self.start_date:
+                raise ValidationError({'end_date': 'End date must occur after start date'})
+
+
+class Place(models.Model):
+    pass
 
 
 class Person(models.Model):
