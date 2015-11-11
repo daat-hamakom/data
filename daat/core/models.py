@@ -15,6 +15,9 @@ class Event(models.Model):
     start_date = models.CharField(max_length=10, validators=[partial_date_validator])
     end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
 
+    def __str__(self):
+        return self.title
+
     def clean(self):
         if self.end_date:
             if self.end_date < self.start_date:
