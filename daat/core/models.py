@@ -18,7 +18,24 @@ class Place(models.Model):
 
 
 class Media(models.Model):
-    pass
+
+    MEDIA_CATEGORIES = (
+        ('manuscript', 'Manuscript'),
+        ('music_score', 'Music Score'),
+        ('song', 'Song'),
+        ('story', 'Story'),
+        ('photograph', 'Photograph')
+    )
+
+    file = models.FileField()
+    title = models.CharField(max_length=120)
+    category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
+    source = models.CharField(max_length=200, blank=True)
+    source_url = models.CharField(max_length=500, blank=True)
+    copyrights = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Person(models.Model):
