@@ -19,7 +19,7 @@ class Media(models.Model):
         ('photograph', 'Photograph')
     )
 
-    file = models.FileField()
+    file = models.FileField(upload_to=lambda i, f: '{}/{}'.format(i.category, f))
     title = models.CharField(max_length=120)
     category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
     source = models.CharField(max_length=200, blank=True)
@@ -82,7 +82,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
     description = models.TextField(blank=True)
-    places = ManyToManyField(Place, related_name='organizations')
+    places = models.ManyToManyField(Place, related_name='organizations')
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = models.CharField(max_length=10, validators=[partial_date_validator])
     end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
