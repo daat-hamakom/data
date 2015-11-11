@@ -17,17 +17,32 @@ class Place(models.Model):
     pass
 
 
-class Person(models.Model):
+class Media(models.Model):
     pass
+
+
+class Person(models.Model):
+    title = models.CharField(max_length=50, blank=True)
+    first_name = models.CharField(max_length=120)
+    middle_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=150)
+    nickname = models.CharField(max_length=150, blank=True)
+    birth_date = models.CharField(max_length=10, validators=[partial_date_validator])
+    death_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+    biography = models.TextField(blank=True)
+    profile_image = models.ForeignKey(Media, blank=True, null=True)
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.last_name)
+
+    def clean(self):
+        if self.death_date:
+            if self.death_date < self.birth_date:
+                raise ValidationError({'death_date': 'Death date must occur after birth date'})
 
 
 class Organization(models.Model):
     pass
-
-
-class Media(models.Model):
-    pass
-
 
 class Event(models.Model):
     MAP_CONTEXTS = (

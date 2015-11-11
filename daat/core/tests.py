@@ -21,3 +21,7 @@ class EventTestCase(TestCase):
             Event.objects.create(title='Test Event', start_date='2015-02-30').full_clean()
         with self.assertRaises(ValidationError):
             Event.objects.create(title='Test Event', start_date='2015-02-30', end_date='2014-01-02').full_clean()
+
+    def test_person_dates(self):
+        with self.assertRaises(ValidationError):
+            Person.objects.create(first_name='Shai', last_name='Agnon', birth_date='1999-09-09', death_date='1888-08-08')
