@@ -12,3 +12,6 @@ DATABASES = {
         'PASSWORD': 'daat'
     }
 }
+
+STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
+STATIC_URL = '/static/'
