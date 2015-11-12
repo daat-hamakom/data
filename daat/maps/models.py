@@ -37,7 +37,7 @@ class Researcher(models.Model):
     profile_image = models.FileField(upload_to='researcher_profiles', blank=True, null=True)
 
     def __str__(self):
-        return '{} {}'.format(first_name, last_name)
+        return '{} {}'.format(self.first_name, self.last_name)
 
 
 class Project(models.Model):
