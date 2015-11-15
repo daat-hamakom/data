@@ -16,7 +16,19 @@ class LargeTextInputMixin(object):
 class LargeTextInputAdmin(LargeTextInputMixin, admin.ModelAdmin):
     pass
 
-admin.site.register(Event)
+
+def make_published(modeladmin, request, queryset):
+    queryset.update(published=True)
+make_published.short_description = 'Mark selected events as published'
+
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'description', 'start_date', 'end_date', 'project', 'published')
+    list_filter = ('project', 'published')
+    actions = [make_published]
+
+
+admin.site.register(Event, EventAdmin)
 admin.site.register(Media)
 admin.site.register(Organization)
 admin.site.register(Person)

@@ -132,7 +132,7 @@ class Event(models.Model):
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
-    media = models.ManyToManyField(Media, related_name='events')
+    media = models.ManyToManyField(Media, blank=True, related_name='events')
     project = models.ForeignKey(Project, blank=True, null=True, related_name='events')
     published = models.BooleanField(default=False)
 
