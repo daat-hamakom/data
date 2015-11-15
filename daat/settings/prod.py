@@ -36,6 +36,10 @@ CACHES = {
     }
 }
 
+INSTALLED_APPS += (
+    's3direct',
+)
+
 CELERY_ALWAYS_EAGER = True
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
@@ -55,6 +59,11 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_ACCESS_KEY_ID = environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
+
+S3DIRECT_REGION = 'eu-west-1'
+S3DIRECT_DESTINATIONS = {
+    'media': ('media', lambda u: u.is_authenticated()),
+}
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True

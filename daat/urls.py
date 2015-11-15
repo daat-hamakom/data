@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^s3direct/', include('s3direct.urls')),
 ]
 
 if settings.DEBUG:

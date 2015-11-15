@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from geoposition.fields import GeopositionField
+from s3direct.fields import S3DirectField
 
 from .utils import partial_date_validator
 
@@ -27,7 +28,7 @@ class Media(models.Model):
         ('photograph', 'Photograph')
     )
 
-    file = models.FileField(upload_to=concat_category)
+    file = S3DirectField(dest='media')
     title = models.CharField(max_length=120)
     category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
     source = models.CharField(max_length=200, blank=True)
