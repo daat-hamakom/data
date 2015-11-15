@@ -34,6 +34,9 @@ class Media(models.Model):
     source_url = models.CharField(max_length=500, blank=True)
     copyrights = models.CharField(max_length=200, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'media'
+
     def __str__(self):
         return self.title
 
