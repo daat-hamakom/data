@@ -42,6 +42,7 @@ class Researcher(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=150)
+    researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
     synopsis = models.TextField(blank=True)
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = models.CharField(max_length=10, validators=[partial_date_validator])
@@ -70,6 +71,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=120)
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=150)
+    hebrew_name = models.CharField(max_length=200, blank=True)
     nickname = models.CharField(max_length=150, blank=True)
     birth_date = models.CharField(max_length=10, validators=[partial_date_validator])
     death_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
@@ -89,7 +91,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
     description = models.TextField(blank=True)
-    places = models.ManyToManyField(Place, related_name='organizations')
+    places = models.ManyToManyField(Place, blank=True, related_name='organizations')
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = models.CharField(max_length=10, validators=[partial_date_validator])
     end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
@@ -119,9 +121,11 @@ class Event(models.Model):
     end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
     place = models.ForeignKey(Place, related_name='events')
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
-    people = models.ManyToManyField(Person, related_name='events')
-    organizations = models.ManyToManyField(Organization, related_name='events')
+    people = models.ManyToManyField(Person, blank=True, related_name='events')
+    organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     media = models.ManyToManyField(Media, related_name='events')
+    project = models.ForeignKey(Project, blank=True, null=True, related_name='events')
+    published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -146,7 +150,7 @@ class Annotation(models.Model):
         ('flow', 'Flow')
     )
 
-    places = models.ManyToManyField(Place, related_name='annotations')
+    places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
     description = models.TextField(blank=True)
