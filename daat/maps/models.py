@@ -168,6 +168,7 @@ class Annotation(models.Model):
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
     description = models.TextField(blank=True)
     link_style = models.CharField(max_length=20, choices=ANNOTATION_LINKS)
+    published = models.BooleanField(default=False)
 
     def __str__(self):
         evs = map(str, self.events.all())
