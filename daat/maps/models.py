@@ -8,6 +8,15 @@ from .utils import partial_date_validator
 def concat_category(i, f):
     return '{}/{}'.format(i.category, f)
 
+
+class PartialDateCharField(models.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 10
+        kwargs['validators'] = [partial_date_validator]
+        kwargs['help_text'] = 'Date in YYYY-MM-DD format, use 00 to denote month/day ranges'
+        return super().__init__(*args, **kwargs)
+
+
 class Media(models.Model):
 
     MEDIA_CATEGORIES = (
@@ -45,8 +54,8 @@ class Project(models.Model):
     researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
     synopsis = models.TextField(blank=True)
     cover_image = models.ForeignKey(Media, blank=True, null=True)
-    start_date = models.CharField(max_length=10, validators=[partial_date_validator])
-    end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+    start_date = PartialDateCharField()
+    end_date = PartialDateCharField(blank=True)
 
     def __str__(self):
         return self.title
@@ -73,8 +82,8 @@ class Person(models.Model):
     last_name = models.CharField(max_length=150)
     hebrew_name = models.CharField(max_length=200, blank=True)
     nickname = models.CharField(max_length=150, blank=True)
-    birth_date = models.CharField(max_length=10, validators=[partial_date_validator])
-    death_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+    birth_date = PartialDateCharField()
+    death_date = PartialDateCharField(blank=True)
     biography = models.TextField(blank=True)
     profile_image = models.ForeignKey(Media, blank=True, null=True)
 
@@ -93,8 +102,8 @@ class Organization(models.Model):
     description = models.TextField(blank=True)
     places = models.ManyToManyField(Place, blank=True, related_name='organizations')
     cover_image = models.ForeignKey(Media, blank=True, null=True)
-    start_date = models.CharField(max_length=10, validators=[partial_date_validator])
-    end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+    start_date = PartialDateCharField()
+    end_date = PartialDateCharField(blank=True)
 
     def __str__(self):
         return self.name
@@ -117,8 +126,8 @@ class Event(models.Model):
 
     title = models.CharField(max_length=160)
     description = models.TextField(blank=True)
-    start_date = models.CharField(max_length=10, validators=[partial_date_validator])
-    end_date = models.CharField(max_length=10, blank=True, validators=[partial_date_validator])
+    start_date = PartialDateCharField()
+    end_date = PartialDateCharField(blank=True)
     place = models.ForeignKey(Place, related_name='events')
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     people = models.ManyToManyField(Person, blank=True, related_name='events')
