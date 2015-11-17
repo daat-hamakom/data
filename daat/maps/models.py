@@ -33,7 +33,7 @@ class Media(models.Model):
     category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
-    copyrights = models.CharField(max_length=200, blank=True)
+    copyrights = models.CharField(max_length=200, help_text='For no copyrights use "Public Domain"')
 
     class Meta:
         verbose_name_plural = 'media'
@@ -46,6 +46,7 @@ class Researcher(models.Model):
     title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=150)
+    affiliation = models.CharField(max_length=150, blank=True)
     biography = models.TextField(blank=True)
     profile_image = models.FileField(upload_to='researcher_profiles', blank=True, null=True)
 
@@ -55,6 +56,9 @@ class Researcher(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=150)
+    subtitle = models.CharField(max_length=150, blank=True)
+    institution = models.CharField(max_length=200, blank=True)
+    supported_by = models.CharField(max_length=200, blank=True)
     researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
     synopsis = models.TextField(blank=True)
     cover_image = models.ForeignKey(Media, blank=True, null=True)
@@ -137,7 +141,7 @@ class Event(models.Model):
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     media = models.ManyToManyField(Media, blank=True, related_name='events')
-    project = models.ForeignKey(Project, blank=True, null=True, related_name='events')
+    project = models.ForeignKey(Project, related_name='events')
     published = models.BooleanField(default=False)
 
     def __str__(self):
