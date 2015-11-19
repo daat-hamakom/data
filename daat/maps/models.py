@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import HStoreField
 from django.core.exceptions import ValidationError
 from django.db import models
 from geoposition.fields import GeopositionField
@@ -79,6 +80,7 @@ class Place(models.Model):
     name = models.CharField(max_length=200)
     alt_name = models.CharField(max_length=300, blank=True)
     position = GeopositionField()
+    area = HStoreField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 
     def __str__(self):
         return self.name

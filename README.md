@@ -15,5 +15,7 @@ Interactive mapping platform for research data visualization
 $ mkvirtualenv daat -p `which python3`
 $ pip install -r requirements.txt
 $ createuser -d daat && createdb daat -O daat
+$ psql -d daat
+daat=# CREATE EXTENSION hstore;
 $ ./manage.py migrate
 ```
