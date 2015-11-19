@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.contrib import admin
 from django.forms import ModelForm, TextInput
 from django.db import models

@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.contrib.postgres.fields import HStoreField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -139,7 +140,7 @@ class Event(models.Model):
 
     published = models.BooleanField(default=False)
     title = models.CharField(max_length=160)
-    description = models.TextField(blank=True)
+    description = RichTextField(blank=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
     place = models.ForeignKey(Place, related_name='events')
