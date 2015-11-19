@@ -72,8 +72,6 @@ USE_TZ = True
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
-CKEDITOR_JQUERY_URL = '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js'
-
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
