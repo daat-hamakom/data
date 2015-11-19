@@ -94,6 +94,7 @@ class Person(models.Model):
     death_date = PartialDateCharField(blank=True)
     biography = models.TextField(blank=True)
     profile_image = models.ForeignKey(Media, blank=True, null=True)
+    places = models.ManyToManyField(Place, blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
