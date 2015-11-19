@@ -135,6 +135,7 @@ class Event(models.Model):
         ('world', 'World'),
     )
 
+    published = models.BooleanField(default=False)
     title = models.CharField(max_length=160)
     description = models.TextField(blank=True)
     start_date = PartialDateCharField()
@@ -145,7 +146,7 @@ class Event(models.Model):
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     media = models.ManyToManyField(Media, blank=True, related_name='events')
     project = models.ForeignKey(Project, related_name='events')
-    published = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.title
