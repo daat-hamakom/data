@@ -26,6 +26,7 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'description', 'start_date', 'end_date', 'project', 'published')
     list_filter = ('project', 'published')
     actions = [make_published]
+    save_as = True
 
 
 admin.site.register(Event, EventAdmin)
