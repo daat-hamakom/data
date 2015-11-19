@@ -146,6 +146,7 @@ class Event(models.Model):
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     media = models.ManyToManyField(Media, blank=True, related_name='events')
     project = models.ForeignKey(Project, related_name='events')
+    next_event = models.ForeignKey('Event', blank=True, null=True)
 
 
     def __str__(self):
