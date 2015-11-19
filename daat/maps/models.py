@@ -161,7 +161,8 @@ class Annotation(models.Model):
         ('correspondence', 'Correspondence'),
         ('group', 'Group'),
         ('travel', 'Travel'),
-        ('trend', 'Trend')
+        ('trend', 'Trend'),
+        ('reference', 'Reference')
     )
 
     ANNOTATION_LINKS = (
