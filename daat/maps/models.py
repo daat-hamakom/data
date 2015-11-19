@@ -110,6 +110,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
     description = models.TextField(blank=True)
+    type = models.CharField(max_length=200, blank=True)
     places = models.ManyToManyField(Place, blank=True, related_name='organizations')
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
