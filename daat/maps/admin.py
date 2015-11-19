@@ -30,6 +30,12 @@ class EventAdmin(admin.ModelAdmin):
     save_as = True
 
 
+class AnnotationAdmin(admin.ModelAdmin):
+    list_filter = ('events', 'events__project', 'published')
+    actions = [make_published]
+    save_as = True
+
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Media)
 admin.site.register(Organization)
@@ -37,4 +43,4 @@ admin.site.register(Person)
 admin.site.register(Place)
 admin.site.register(Project)
 admin.site.register(Researcher)
-admin.site.register(Annotation)
+admin.site.register(Annotation, AnnotationAdmin)
