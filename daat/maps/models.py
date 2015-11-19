@@ -4,9 +4,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
+from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
 
 from .utils import partial_date_validator
 
+
+SafeDeleteMixin = safedelete_mixin_factory(policy=SOFT_DELETE, visibility=DELETED_VISIBLE_BY_PK)
 
 def concat_category(i, f):
     return '{}/{}'.format(i.category, f)
@@ -20,7 +23,7 @@ class PartialDateCharField(models.CharField):
         return super().__init__(*args, **kwargs)
 
 
-class Media(models.Model):
+class Media(SafeDeleteMixin):
 
     MEDIA_CATEGORIES = (
         ('manuscript', 'Manuscript'),
@@ -44,7 +47,7 @@ class Media(models.Model):
         return self.title
 
 
-class Researcher(models.Model):
+class Researcher(SafeDeleteMixin):
     title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=150)
@@ -56,7 +59,7 @@ class Researcher(models.Model):
         return '{} {}'.format(self.first_name, self.last_name)
 
 
-class Project(models.Model):
+class Project(SafeDeleteMixin):
     title = models.CharField(max_length=150)
     subtitle = models.CharField(max_length=150, blank=True)
     institution = models.CharField(max_length=200, blank=True)
@@ -77,7 +80,7 @@ class Project(models.Model):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Place(models.Model):
+class Place(SafeDeleteMixin):
     name = models.CharField(max_length=200)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
         help_text='Single alt name with no commas, or comma-separated list of names' +
@@ -89,7 +92,7 @@ class Place(models.Model):
         return self.name
 
 
-class Person(models.Model):
+class Person(SafeDeleteMixin):
     title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     middle_name = models.CharField(max_length=50, blank=True)
@@ -111,7 +114,7 @@ class Person(models.Model):
                 raise ValidationError({'death_date': 'Death date must occur after birth date'})
 
 
-class Organization(models.Model):
+class Organization(SafeDeleteMixin):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
     description = models.TextField(blank=True)
@@ -130,7 +133,7 @@ class Organization(models.Model):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Event(models.Model):
+class Event(SafeDeleteMixin):
     MAP_CONTEXTS = (
         ('neighbourhood', 'Neighbourhood'),
         ('city', 'City'),
@@ -163,7 +166,7 @@ class Event(models.Model):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Annotation(models.Model):
+class Annotation(SafeDeleteMixin):
     ANNOTATION_TYPES = (
         ('correspondence', 'Correspondence'),
         ('group', 'Group'),
