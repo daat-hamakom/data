@@ -31,7 +31,7 @@ class CreatorPermissionsMixin(models.Model):
         abstract = True
 
 
-class Media(SafeDeleteMixin):
+class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
     MEDIA_CATEGORIES = (
         ('manuscript', 'Manuscript'),
@@ -55,7 +55,7 @@ class Media(SafeDeleteMixin):
         return self.title
 
 
-class Researcher(SafeDeleteMixin):
+class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=150)
@@ -67,7 +67,7 @@ class Researcher(SafeDeleteMixin):
         return '{} {}'.format(self.first_name, self.last_name)
 
 
-class Project(SafeDeleteMixin):
+class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=150)
     subtitle = models.CharField(max_length=150, blank=True)
     institution = models.CharField(max_length=200, blank=True)
@@ -88,7 +88,7 @@ class Project(SafeDeleteMixin):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Place(SafeDeleteMixin):
+class Place(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=200)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
         help_text='Single alt name with no commas, or comma-separated list of names' +
@@ -100,7 +100,7 @@ class Place(SafeDeleteMixin):
         return self.name
 
 
-class Person(SafeDeleteMixin):
+class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=50, blank=True)
     first_name = models.CharField(max_length=120)
     middle_name = models.CharField(max_length=50, blank=True)
@@ -122,7 +122,7 @@ class Person(SafeDeleteMixin):
                 raise ValidationError({'death_date': 'Death date must occur after birth date'})
 
 
-class Organization(SafeDeleteMixin):
+class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
     description = models.TextField(blank=True)
@@ -141,7 +141,7 @@ class Organization(SafeDeleteMixin):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Event(SafeDeleteMixin):
+class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     MAP_CONTEXTS = (
         ('neighbourhood', 'Neighbourhood'),
         ('city', 'City'),
@@ -174,7 +174,7 @@ class Event(SafeDeleteMixin):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
-class Annotation(SafeDeleteMixin):
+class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     ANNOTATION_TYPES = (
         ('correspondence', 'Correspondence'),
         ('group', 'Group'),

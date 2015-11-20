@@ -11,7 +11,13 @@ def make_published(modeladmin, request, queryset):
 make_published.short_description = 'Mark selected events as published'
 
 
-class EventAdmin(admin.ModelAdmin):
+class CreatorMixin(object):
+    def save_model(self, request, obj, form, change):
+        obj.creator = request.user
+        obj.save()
+
+
+class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'description', 'start_date', 'end_date', 'project', 'published')
     list_filter = ('project', 'published')
     exclude = ('deleted',)
@@ -19,31 +25,31 @@ class EventAdmin(admin.ModelAdmin):
     save_as = True
 
 
-class MediaAdmin(admin.ModelAdmin):
+class MediaAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class OrganizationAdmin(admin.ModelAdmin):
+class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class PersonAdmin(admin.ModelAdmin):
+class PersonAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class ResearcherAdmin(admin.ModelAdmin):
+class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
-class AnnotationAdmin(admin.ModelAdmin):
+class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     list_filter = ('events', 'events__project', 'published')
     exclude = ('deleted',)
     actions = [make_published]
