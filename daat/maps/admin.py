@@ -12,6 +12,9 @@ make_published.short_description = 'Mark selected events as published'
 
 
 class CreatorMixin(object):
+
+    readonly_fields = ('creator',)
+
     def save_model(self, request, obj, form, change):
         obj.creator = request.user
         obj.save()
