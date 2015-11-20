@@ -19,6 +19,7 @@ INSTALLED_APPS = (
 
     'ckeditor',
     'geoposition',
+    'guardian',
 
     'daat.core',
     'daat.maps',
@@ -34,8 +35,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
-
-AUTH_USER_MODEL = 'core.DaatUser'
 
 ROOT_URLCONF = 'daat.urls'
 
@@ -56,6 +55,15 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+AUTH_USER_MODEL = 'core.DaatUser'
+
+ANONYMOUS_USER_ID = None
 
 WSGI_APPLICATION = 'daat.wsgi.application'
 

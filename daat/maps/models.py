@@ -1,4 +1,5 @@
 from ckeditor.fields import RichTextField
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -21,6 +22,13 @@ class PartialDateCharField(models.CharField):
         kwargs['validators'] = [partial_date_validator]
         kwargs['help_text'] = 'Date in YYYY-MM-DD format, use 00 to denote month/day ranges'
         return super().__init__(*args, **kwargs)
+
+
+class CreatorPermissionsMixin(models.Model):
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False)
+
+    class Meta:
+        abstract = True
 
 
 class Media(SafeDeleteMixin):

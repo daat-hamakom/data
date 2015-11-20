@@ -8,6 +8,7 @@ dj-database-url==0.3.0
 django-appconf==1.0.1
 django-ckeditor==5.0.2
 django-geoposition==0.2.2
+django-guardian==1.3.2
 django-redis-cache==1.6.3
 django-s3direct==0.3.11
 django-safedelete==0.3.1
