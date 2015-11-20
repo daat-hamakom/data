@@ -14,8 +14,8 @@ Interactive mapping platform for research data visualization
 ```bash
 $ mkvirtualenv daat -p `which python3`
 $ pip install -r requirements.txt
-$ createuser -d daat && createdb daat -O daat
-$ psql -d daat
-daat=# CREATE EXTENSION hstore;
+$ createdb daat
 $ ./manage.py migrate
 ```
+
+Make sure you create the `daat` database with a user that has superuser privilege (this is default for OS X installations through homebrew). This is required so that the migrations can add the hstore extension.

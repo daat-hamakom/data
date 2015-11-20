@@ -6,6 +6,7 @@ import django.contrib.postgres.fields
 import geoposition.fields
 import daat.maps.models
 import django.contrib.postgres.fields.hstore
+from django.contrib.postgres.operations import HStoreExtension
 from django.conf import settings
 import ckeditor.fields
 import s3direct.fields
@@ -19,6 +20,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        HStoreExtension(),
         migrations.CreateModel(
             name='Annotation',
             fields=[
