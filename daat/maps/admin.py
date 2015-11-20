@@ -22,7 +22,7 @@ class CreatorMixin(object):
 
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'description', 'start_date', 'end_date', 'project', 'published')
-    list_filter = ('project', 'published')
+    list_filter = ('project', 'published', 'creator')
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
@@ -53,7 +53,7 @@ class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
-    list_filter = ('events', 'events__project', 'published')
+    list_filter = ('events', 'events__project', 'published', 'creator')
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
