@@ -42,7 +42,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
     file = S3DirectField(dest='media')
     type = models.CharField(max_length=20, choices=FILETYPES, blank=True)
-    title = models.CharField(max_length=120)
+    title = models.CharField(max_length=200, unique=True)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
     copyrights = models.CharField(max_length=200, help_text='For no copyrights use "Public Domain"')
