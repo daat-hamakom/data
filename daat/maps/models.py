@@ -193,13 +193,14 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
         ('group', 'Group'),
         ('travel', 'Travel'),
         ('trend', 'Trend'),
-        ('reference', 'Reference')
+        ('reference', 'Reference'),
+        ('origin', 'Origin'),
     )
 
     ANNOTATION_LINKS = (
         ('path', 'Path'),
         ('correspondence', 'Correspondence'),
-        ('flow', 'Flow')
+        ('flow', 'Flow'),
     )
 
     places = models.ManyToManyField(Place, blank=True, related_name='annotations')
