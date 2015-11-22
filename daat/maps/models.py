@@ -61,7 +61,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         return self.title
 
     def save(self, *args, **kwargs):
-        extension = self.file.filename.split('.')[-1].lower()
+        extension = self.file.split('.')[-1].lower()
         extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
         try:
             self.type = extensions[extension]
