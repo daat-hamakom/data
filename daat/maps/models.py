@@ -40,13 +40,6 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         ('video', 'Video'),
     )
 
-    FILE_MAPPINGS = {
-        'image': ['jpg', 'png', 'gif'],
-        'sound': ['mp3', 'wav'],
-        'document': ['pdf', 'txt'],
-        'video': ['mp4', 'avi', 'mov']
-    }
-
     file = S3DirectField(dest='media')
     type = models.CharField(max_length=20, choices=FILETYPES, blank=True)
     title = models.CharField(max_length=120)
@@ -61,6 +54,12 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         return self.title
 
     def save(self, *args, **kwargs):
+        FILE_MAPPINGS = {
+            'image': ['jpg', 'png', 'gif'],
+            'sound': ['mp3', 'wav'],
+            'document': ['pdf', 'txt'],
+            'video': ['mp4', 'avi', 'mov']
+        }
         extension = self.file.split('.')[-1].lower()
         extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
         try:
