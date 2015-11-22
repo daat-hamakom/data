@@ -35,6 +35,8 @@ class MediaAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('name', 'type')
+    list_filter = ('creator',)
     exclude = ('deleted',)
 
 
