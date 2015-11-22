@@ -51,7 +51,7 @@ class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=150)
     affiliation = models.CharField(max_length=150, blank=True)
-    biography = models.TextField(blank=True)
+    biography = RichTextField(blank=True)
     profile_image = models.FileField(upload_to='researcher_profiles', blank=True, null=True)
 
     def __str__(self):
@@ -65,7 +65,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     supported_by = models.CharField(max_length=200, blank=True)
     research_field = models.CharField(max_length=200, blank=True)
     researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
-    synopsis = models.TextField(blank=True)
+    synopsis = RichTextField(blank=True)
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
@@ -100,7 +100,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     nickname = models.CharField(max_length=150, blank=True)
     birth_date = PartialDateCharField()
     death_date = PartialDateCharField(blank=True)
-    biography = models.TextField(blank=True)
+    biography = RichTextField(blank=True)
     profile_image = models.ForeignKey(Media, blank=True, null=True)
     places = models.ManyToManyField(Place, blank=True)
 
@@ -116,7 +116,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
 class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
-    description = models.TextField(blank=True)
+    description = RichTextField(blank=True)
     type = models.CharField(max_length=200, blank=True)
     places = models.ManyToManyField(Place, blank=True, related_name='organizations')
     cover_image = models.ForeignKey(Media, blank=True, null=True)
@@ -183,7 +183,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
-    description = models.TextField(blank=True)
+    description = RichTextField(blank=True)
     origin = models.ForeignKey(Place, blank=True, null=True)
     link_style = models.CharField(max_length=20, choices=ANNOTATION_LINKS)
     published = models.BooleanField(default=False)
