@@ -48,7 +48,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
     }
 
     file = S3DirectField(dest='media')
-    type = models.CharField(max_length=20, choices=FILETYPES)
+    type = models.CharField(max_length=20, choices=FILETYPES, blank=True)
     title = models.CharField(max_length=120)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
