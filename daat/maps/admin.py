@@ -47,6 +47,8 @@ class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('title', 'subtitle')
+    list_filter = ('creator', 'researchers')
     exclude = ('deleted',)
 
 
