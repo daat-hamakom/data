@@ -53,6 +53,7 @@ class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('type', 'published')
     list_filter = ('events', 'events__project', 'published', 'creator')
     exclude = ('deleted',)
     actions = [make_published]
