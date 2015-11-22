@@ -33,7 +33,22 @@ class CreatorPermissionsMixin(models.Model):
 
 class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
+    FILETYPES = (
+        ('image', 'Image'),
+        ('sound', 'Sound'),
+        ('document', 'Document'),
+        ('video', 'Video'),
+    )
+
+    FILE_MAPPINGS = {
+        'image': ['jpg', 'png', 'gif'],
+        'sound': ['mp3', 'wav'],
+        'document': ['pdf', 'txt'],
+        'video': ['mp4', 'avi', 'mov']
+    }
+
     file = S3DirectField(dest='media')
+    type = models.CharField(max_length=20, choices=FILETYPES)
     title = models.CharField(max_length=120)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
@@ -44,6 +59,15 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        extension = self.file.filename.split('.')[-1].lower()
+        extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
+        try:
+            self.type = extensions[extension]
+        except:
+            pass
+        super().save(*args, **kwargs)
 
 
 class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
