@@ -33,17 +33,8 @@ class CreatorPermissionsMixin(models.Model):
 
 class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
-    MEDIA_CATEGORIES = (
-        ('manuscript', 'Manuscript'),
-        ('music_score', 'Music Score'),
-        ('song', 'Song'),
-        ('story', 'Story'),
-        ('photograph', 'Photograph')
-    )
-
     file = S3DirectField(dest='media')
     title = models.CharField(max_length=120)
-    category = models.CharField(max_length=50, choices=MEDIA_CATEGORIES)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
     copyrights = models.CharField(max_length=200, help_text='For no copyrights use "Public Domain"')
