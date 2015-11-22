@@ -53,6 +53,9 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
     def __str__(self):
         return self.title
 
+    def get_filename(self):
+        return self.file.split('/')[-1]
+
     def save(self, *args, **kwargs):
         FILE_MAPPINGS = {
             'image': ['jpg', 'png', 'gif'],
