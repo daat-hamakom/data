@@ -39,6 +39,8 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class PersonAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('title', 'first_name', 'last_name', 'hebrew_name')
+    list_filter = ('creator',)
     exclude = ('deleted',)
 
 
