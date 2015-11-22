@@ -207,7 +207,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
     description = RichTextField(blank=True)
-    origin = models.ForeignKey(Place, blank=True, null=True)
+    origin = models.ForeignKey(Event, blank=True, null=True)
     link_style = models.CharField(max_length=20, choices=ANNOTATION_LINKS)
     published = models.BooleanField(default=False)
 
