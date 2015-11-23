@@ -57,11 +57,17 @@ class ArrayTagWidget(Select2TagWidget):
     def build_attrs(self, extra_attrs=None, **kwargs):
         self.attrs.setdefault('data-token-separators', [])
         self.attrs.setdefault('data-width', '500px')
+        self.attrs.setdefault('data-tags', 'true')
         return super().build_attrs(extra_attrs, **kwargs)
 
     def value_from_datadict(self, data, files, name):
         values = super().value_from_datadict(data, files, name)
         return ','.join(values)
+
+    def render_options(self, choices, selected_choices):
+        OPTION_SELECTED = '<option selected="selected" value="{}">{}</option>'
+        options = ['abc', 'dev']
+        return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
 
 
 class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
