@@ -1,7 +1,9 @@
 from ckeditor.fields import RichTextField
 from django.contrib import admin
+from django.contrib.postgres.fields import ArrayField
 from django.forms import ModelForm, TextInput
 from django.db import models
+from django_select2.forms import Select2TagWidget
 
 from .models import *
 
@@ -50,8 +52,29 @@ class PersonAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
 
 
+class ArrayTagWidget(Select2TagWidget):
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        self.attrs.setdefault('data-token-separators', [])
+        self.attrs.setdefault('data-width', '500px')
+        return super().build_attrs(extra_attrs, **kwargs)
+
+    def value_from_datadict(self, data, files, name):
+        values = super().value_from_datadict(data, files, name)
+        return ','.join(values)
+
+
 class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
+
+    class Media:
+        js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+
     exclude = ('deleted',)
+    formfield_overrides = {
+        ArrayField: {
+            'widget': ArrayTagWidget
+        },
+    }
 
 
 class ProjectAdmin(CreatorMixin, admin.ModelAdmin):

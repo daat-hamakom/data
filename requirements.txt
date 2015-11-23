@@ -5,6 +5,7 @@ boto==2.39.0
 celery==3.1.20
 dj-database-url==0.3.0
 Django==1.9.2
+Django-Select2==5.4.0
 django-appconf==1.0.1
 django-ckeditor==5.0.2
 django-cors-headers==1.1.0

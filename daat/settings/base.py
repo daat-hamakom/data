@@ -19,6 +19,7 @@ INSTALLED_APPS = (
 
     'ckeditor',
     'corsheaders',
+    'django_select2',
     'geoposition',
     'guardian',
     'rest_framework',

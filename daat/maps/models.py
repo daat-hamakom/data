@@ -129,8 +129,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=200)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
-        help_text='Single alt name with no commas, or comma-separated list of names' +
-        ' (e.g. <code>Tel-Aviv,Tel Aviv,תל אביב)</code>')
+        help_text='Multiple alternative names allowed, press Enter between entires')
     position = GeopositionField()
     area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 

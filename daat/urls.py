@@ -16,7 +16,9 @@ urlpatterns = [
     url(r'^sprites.png', SpritePngView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
+
     url(r'^s3direct/', include('s3direct.urls')),
+    url(r'^select2/', include('django_select2.urls')),
 ]
 
 if settings.DEBUG:
