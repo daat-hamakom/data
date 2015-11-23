@@ -87,7 +87,6 @@ class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
 class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=150)
     subtitle = models.CharField(max_length=150, blank=True)
-    institution = models.CharField(max_length=200, blank=True)
     supported_by = models.CharField(max_length=200, blank=True)
     researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
     synopsis = RichTextField(blank=True)
