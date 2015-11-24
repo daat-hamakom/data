@@ -1,6 +1,6 @@
-# Da'at Hamakom
+# Da'at Hamakom Data Models and Backend Admin
 
-Interactive mapping platform for research data visualization
+Django-based project running the Da'at Hamakom backend data models and admin panel.
 
 ## Dev
 
