@@ -38,9 +38,11 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         ('sound', 'Sound'),
         ('document', 'Document'),
         ('video', 'Video'),
+        ('link', 'Link')
     )
 
-    file = S3DirectField(dest='media')
+    file = S3DirectField(dest='media', blank=True)
+    url = models.CharField(max_length=500, blank=True, help_text='If file not uploaded, a URL must be filled (e.g. Youtube video, external link...)')
     type = models.CharField(max_length=20, choices=FILETYPES, blank=True)
     title = models.CharField(max_length=200, unique=True)
     source = models.CharField(max_length=200, blank=True)
@@ -56,6 +58,17 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
     def filename(self):
         return self.file.split('/')[-1]
 
+    def clean(self):
+        if not self.file and not self.url:
+            raise ValidationError({
+                'file': 'Either file must be uploaded or URL field must not be blank',
+                'url': 'Either file must be uploaded or URL field must not be blank',
+            })
+        if self.file and self.url:
+            raise ValidationError({
+                'url': 'URL field cannot be filled out if a file was already uploaded, it must be blank',
+            })
+
     def save(self, *args, **kwargs):
         FILE_MAPPINGS = {
             'image': ['jpg', 'png', 'gif'],
@@ -63,12 +76,15 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
             'document': ['pdf', 'txt'],
             'video': ['mp4', 'avi', 'mov']
         }
-        extension = self.file.split('.')[-1].lower()
-        extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
-        try:
-            self.type = extensions[extension]
-        except:
-            pass
+        if self.file:
+            extension = self.file.split('.')[-1].lower()
+            extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
+            try:
+                self.type = extensions[extension]
+            except:
+                pass
+        elif self.url:
+            self.type = 'link'
         super().save(*args, **kwargs)
 
 

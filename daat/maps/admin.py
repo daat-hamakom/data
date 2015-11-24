@@ -29,7 +29,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class MediaAdmin(CreatorMixin, admin.ModelAdmin):
-    list_display = ('filename', 'title', 'type', 'source', 'copyrights')
+    list_display = ('title', 'filename', 'url', 'type', 'source', 'copyrights')
     list_filter = ('type', 'creator')
     exclude = ('deleted', 'type',)
 
