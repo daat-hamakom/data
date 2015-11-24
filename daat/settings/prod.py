@@ -7,7 +7,7 @@ from .base import *
 ENV = 'prod'
 
 ALLOWED_HOSTS = [
-    'daat-hamakom.herokuapp.com'
+    'daat-hamakom-data.herokuapp.com'
 ]
 
 DATABASES = {
