@@ -184,6 +184,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
     published = models.BooleanField(default=False)
     title = models.CharField(max_length=160)
+    subtitle = models.CharField(max_length=160, blank=True)
     description = RichTextField(blank=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
