@@ -38,12 +38,14 @@ class MediaAdmin(CreatorMixin, admin.ModelAdmin):
 class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('name', 'type')
     list_filter = ('creator',)
+    filter_horizontal = ('places',)
     exclude = ('deleted',)
 
 
 class PersonAdmin(CreatorMixin, admin.ModelAdmin):
-    list_display = ('title', 'first_name', 'last_name', 'hebrew_name')
+    list_display = ('last_name', 'title', 'first_name', 'hebrew_name')
     list_filter = ('creator',)
+    filter_horizontal = ('places',)
     exclude = ('deleted',)
 
 
@@ -54,6 +56,7 @@ class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
 class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'subtitle')
     list_filter = ('creator', 'researchers')
+    filter_horizontal = ('researchers',)
     exclude = ('deleted',)
 
 
@@ -64,6 +67,7 @@ class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
 class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('type', 'published')
     list_filter = ('events', 'events__project', 'published', 'creator')
+    filter_horizontal = ('places', 'events',)
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
