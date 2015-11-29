@@ -23,6 +23,7 @@ class CreatorMixin(object):
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
     list_filter = ('creator', 'project', 'published')
+    filter_horizontal = ('people', 'organizations', 'media',)
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
