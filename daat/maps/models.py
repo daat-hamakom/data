@@ -234,3 +234,6 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     def __str__(self):
         evs = map(str, self.events.all())
         return '({})'.format(', '.join(evs))
+
+    def all_events(self):
+        return str(self)
