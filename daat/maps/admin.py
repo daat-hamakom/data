@@ -43,7 +43,7 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class PersonAdmin(CreatorMixin, admin.ModelAdmin):
-    list_display = ('last_name', 'title', 'first_name', 'hebrew_name')
+    list_display = ('last_name', 'title', 'first_name')
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)

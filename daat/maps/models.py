@@ -136,8 +136,9 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     first_name = models.CharField(max_length=120)
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=150)
-    hebrew_name = models.CharField(max_length=200, blank=True)
-    nickname = models.CharField(max_length=150, blank=True)
+    alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
+        help_text='Single alt name with no commas, or comma-separated list of names' +
+        ' (e.g. <code>Shai Agnon,S. Y. Agnon,ש״י עגנון)</code>')
     birth_date = PartialDateCharField()
     death_date = PartialDateCharField(blank=True)
     biography = RichTextField(blank=True)
