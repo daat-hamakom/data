@@ -190,6 +190,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
     place = models.ForeignKey(Place, related_name='events')
+    political_entity = models.CharField(max_length=200, blank=True)
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
