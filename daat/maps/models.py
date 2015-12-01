@@ -215,6 +215,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
         ('trend', 'Trend'),
         ('reference', 'Reference'),
         ('origin', 'Origin'),
+        ('quote', 'Quote'),
     )
 
     ANNOTATION_LINKS = (
