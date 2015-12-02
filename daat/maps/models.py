@@ -1,6 +1,6 @@
 from ckeditor.fields import RichTextField
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField, HStoreField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from geoposition.fields import GeopositionField
@@ -125,7 +125,7 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
         help_text='Single alt name with no commas, or comma-separated list of names' +
         ' (e.g. <code>Tel-Aviv,Tel Aviv,תל אביב)</code>')
     position = GeopositionField()
-    area = HStoreField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
+    area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 
     def __str__(self):
         return self.name
