@@ -219,18 +219,11 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
         ('quote', 'Quote'),
     )
 
-    ANNOTATION_LINKS = (
-        ('path', 'Path'),
-        ('correspondence', 'Correspondence'),
-        ('flow', 'Flow'),
-    )
-
     places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
     description = RichTextField(blank=True)
     origin = models.ForeignKey(Event, blank=True, null=True)
-    link_style = models.CharField(max_length=20, choices=ANNOTATION_LINKS)
     published = models.BooleanField(default=False)
 
     def __str__(self):
