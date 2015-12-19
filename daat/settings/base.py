@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     'ckeditor',
     'geoposition',
     'guardian',
+    'rest_framework',
 
     'daat.core',
     'daat.maps',
@@ -76,6 +77,18 @@ USE_I18N = False
 USE_L10N = False
 
 USE_TZ = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
