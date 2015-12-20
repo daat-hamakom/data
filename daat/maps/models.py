@@ -51,6 +51,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
     class Meta:
         verbose_name_plural = 'media'
+        ordering = ['title']
 
     def __str__(self):
         return self.title
@@ -96,6 +97,9 @@ class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
     biography = RichTextField(blank=True)
     profile_image = models.FileField(upload_to='researcher_profiles', blank=True, null=True)
 
+    class Meta:
+        ordering = ['first_name']
+
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
@@ -109,6 +113,9 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
+
+    class Meta:
+        ordering = ['title']
 
     def __str__(self):
         return self.title
@@ -126,6 +133,9 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
         ' (e.g. <code>Tel-Aviv,Tel Aviv,תל אביב)</code>')
     position = GeopositionField()
     area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -145,6 +155,9 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     profile_image = models.ForeignKey(Media, blank=True, null=True)
     places = models.ManyToManyField(Place, blank=True)
 
+    class Meta:
+        ordering = ['first_name']
+
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
@@ -163,6 +176,9 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -198,6 +214,8 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     project = models.ForeignKey(Project, related_name='events')
     next_event = models.ForeignKey('Event', blank=True, null=True)
 
+    class Meta:
+        ordering = ['title']
 
     def __str__(self):
         return self.title
