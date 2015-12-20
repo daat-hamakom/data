@@ -16,7 +16,8 @@ class CreatorMixin(object):
     readonly_fields = ('creator',)
 
     def save_model(self, request, obj, form, change):
-        obj.creator = request.user
+        if not obj.creator:
+            obj.creator = request.user
         obj.save()
 
 
