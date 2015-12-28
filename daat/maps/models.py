@@ -213,9 +213,10 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     media = models.ManyToManyField(Media, blank=True, related_name='events')
     project = models.ForeignKey(Project, related_name='events')
     next_event = models.ForeignKey('Event', blank=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['title']
+        ordering = ['-updated']
 
     def __str__(self):
         return self.title
