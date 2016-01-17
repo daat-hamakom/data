@@ -18,6 +18,7 @@ INSTALLED_APPS = (
     'django.contrib.postgres',
 
     'ckeditor',
+    'corsheaders',
     'geoposition',
     'guardian',
     'rest_framework',
@@ -28,6 +29,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,6 +92,10 @@ REST_FRAMEWORK = {
         'rest_framework_csv.renderers.CSVRenderer',
     )
 }
+
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ORIGIN_WHITELIST = ('daat-hamakom.herokuapp.com',)
+CORS_ALLOW_METHODS = ('GET', 'OPTIONS')
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
