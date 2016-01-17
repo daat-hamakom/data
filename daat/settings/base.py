@@ -94,7 +94,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ORIGIN_WHITELIST = ('daat-hamakom.herokuapp.com',)
+# CORS_ORIGIN_WHITELIST = ('daat-hamakom.herokuapp.com',)
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = ('GET', 'OPTIONS')
 
 CELERY_ACCEPT_CONTENT = ['json']
