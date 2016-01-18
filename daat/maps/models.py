@@ -243,6 +243,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
     description = RichTextField(blank=True)
     origin = models.ForeignKey(Event, blank=True, null=True)
+    media = models.ManyToManyField(Media, blank=True, related_name='annotations')
     published = models.BooleanField(default=False)
 
     def __str__(self):

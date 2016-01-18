@@ -68,7 +68,7 @@ class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
 class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('all_events', 'type', 'published')
     list_filter = ('events', 'events__project', 'published', 'creator')
-    filter_horizontal = ('places', 'events',)
+    filter_horizontal = ('places', 'events', 'media')
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
