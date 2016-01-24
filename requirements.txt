@@ -8,10 +8,10 @@ Django==1.9
 django-appconf==1.0.1
 django-ckeditor==5.0.2
 django-cors-headers==1.1.0
--e git+https://github.com/yuvadm/django-geoposition@ab2076aa7478030e8c4a53bec69e14e2da6c1f14#egg=django_geoposition-origin_django-1.9
+-e git+https://github.com/yuvadm/django-geoposition@ab2076aa7478030e8c4a53bec69e14e2da6c1f14#egg=django_geoposition
 django-guardian==1.3.2
 django-redis-cache==1.6.3
--e git+https://github.com/yuvadm/django-s3direct@20d02eef92d458dac890f1ab814ca146f2bd1853#egg=django_s3direct-origin_urls
+-e git+https://github.com/yuvadm/django-s3direct@20d02eef92d458dac890f1ab814ca146f2bd1853#egg=django_s3direct
 django-safedelete==0.3.1
 django-storages-redux==1.3
 djangorestframework==3.3.2
@@ -24,5 +24,5 @@ pytz==2015.7
 raven==5.8.1
 redis==2.10.5
 six==1.10.0
-wheel==0.24.0
+wheel==0.26.0
 whitenoise==2.0.4
