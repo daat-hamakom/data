@@ -226,6 +226,20 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
             if self.end_date < self.start_date:
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
+    @property
+    def icon(self):
+        first_media = self.media.first()
+        if first_media:
+            return first_media
+
+        person = self.people.first()
+        if person:
+            person_media = person.profile_image
+            if person_media:
+                return person_media
+
+        return self.project.cover_image
+
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     ANNOTATION_TYPES = (
