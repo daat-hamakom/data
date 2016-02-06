@@ -23,6 +23,6 @@ class SpritePngView(View):
     def get(self, *args, **kwargs):
         png = cache.get('sprites:png')
         png.seek(0)
-        response = HttpResponse(png.seek(0).read())
+        response = HttpResponse(png.read())
         response['Content-Type'] = 'image/png'
         return response
