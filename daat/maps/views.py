@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.core.cache import cache
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 
 from rest_framework import permissions
@@ -16,10 +17,10 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SpriteJsonView(View):
     def get(self, *args, **kwargs):
-        response = HttpResponse('hai')
-        return response
+        return JsonResponse(cache.get('sprites:json'))
 
 class SpritePngView(View):
     def get(self, *args, **kwargs):
-        response = HttpResponse('hai')
+        response = HttpResponse(cache.get('sprites:png').seek(0).read())
+        response['Content-Type'] = 'image/png'
         return response
