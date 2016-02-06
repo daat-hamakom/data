@@ -21,6 +21,8 @@ class SpriteJsonView(View):
 
 class SpritePngView(View):
     def get(self, *args, **kwargs):
-        response = HttpResponse(cache.get('sprites:png').seek(0).read())
+        png = cache.get('sprites:png')
+        png.seek(0)
+        response = HttpResponse(png.seek(0).read())
         response['Content-Type'] = 'image/png'
         return response
