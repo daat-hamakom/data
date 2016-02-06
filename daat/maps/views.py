@@ -14,7 +14,12 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EventSerializer
 
 
-class SpriteView(View):
+class SpriteJsonView(View):
+    def get(self, *args, **kwargs):
+        response = HttpResponse('hai')
+        return response
+
+class SpritePngView(View):
     def get(self, *args, **kwargs):
         response = HttpResponse('hai')
         return response

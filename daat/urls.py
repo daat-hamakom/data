@@ -12,7 +12,8 @@ router.register(r'events', EventViewSet)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),
-    url(r'^sprites', SpriteView.as_view()),
+    url(r'^sprites.json', SpriteJsonView.as_view()),
+    url(r'^sprites.png', SpritePngView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^s3direct/', include('s3direct.urls')),
