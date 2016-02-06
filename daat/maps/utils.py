@@ -26,7 +26,7 @@ class SpriteCreator(object):
     def __init__(self, events=None):
         self.events = events or []
         self.json = {}
-        self.png = None
+        self.png = BytesIO()
         self.basesize = 40
 
     def build(self):
@@ -61,10 +61,4 @@ class SpriteCreator(object):
                 'pixelRatio': 1
             }
 
-            sprite_img.save('out.png')
-
-    def get_json(self):
-        pass
-
-    def get_png(self):
-        pass
+        sprite_img.save(self.png, 'PNG')
