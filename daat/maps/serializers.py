@@ -11,7 +11,6 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     place = PlaceSerializer(read_only=True)
-    icon = serializers.FileField(use_url=True)
     class Meta:
         model = Event
         fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'place', 'description', 'icon')

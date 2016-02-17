@@ -230,15 +230,15 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     def icon(self):
         first_media = self.media.filter(type='image').first()
         if first_media:
-            return first_media
+            return first_media.file
 
         person = self.people.first()
         if person:
             person_media = person.profile_image
             if person_media:
-                return person_media
+                return person_media.file
 
-        return self.project.cover_image
+        return self.project.cover_image.file
 
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
