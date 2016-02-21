@@ -66,7 +66,7 @@ class ArrayTagWidget(Select2TagWidget):
 
     def render_options(self, choices, selected_choices):
         OPTION_SELECTED = '<option selected="selected" value="{}">{}</option>'
-        options = ['abc', 'dev']
+        options = selected_choices.split(',')
         return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
 
 
