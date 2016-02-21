@@ -129,7 +129,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=200)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
-        help_text='Multiple alternative names allowed, press Enter between entires')
+        help_text='Multiple alternative names allowed, press Enter between entries')
     position = GeopositionField()
     area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 
@@ -146,8 +146,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     middle_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=150)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
-        help_text='Single alt name with no commas, or comma-separated list of names' +
-        ' (e.g. <code>Shai Agnon,S. Y. Agnon,ש״י עגנון)</code>')
+        help_text='Multiple alternative names allowed, press Enter between entries')
     birth_date = PartialDateCharField()
     death_date = PartialDateCharField(blank=True)
     biography = RichTextField(blank=True)

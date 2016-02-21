@@ -23,6 +23,24 @@ class CreatorMixin(object):
         obj.save()
 
 
+class ArrayTagWidget(Select2TagWidget):
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        self.attrs.setdefault('data-token-separators', [])
+        self.attrs.setdefault('data-width', '500px')
+        self.attrs.setdefault('data-tags', 'true')
+        return super().build_attrs(extra_attrs, **kwargs)
+
+    def value_from_datadict(self, data, files, name):
+        values = super().value_from_datadict(data, files, name)
+        return ','.join([x.replace(',', '|') for x in values])
+
+    def render_options(self, choices, selected_choices):
+        OPTION_SELECTED = '<option selected="selected" value="{}">{}</option>'
+        options = [x.replace('|', ',') for x in selected_choices.split(',')]
+        return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
+
+
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
     list_filter = ('creator', 'project', 'published')
@@ -46,28 +64,19 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class PersonAdmin(CreatorMixin, admin.ModelAdmin):
+
+    class Media:
+        js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+
     list_display = ('last_name', 'title', 'first_name')
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
-
-
-class ArrayTagWidget(Select2TagWidget):
-
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        self.attrs.setdefault('data-token-separators', [])
-        self.attrs.setdefault('data-width', '500px')
-        self.attrs.setdefault('data-tags', 'true')
-        return super().build_attrs(extra_attrs, **kwargs)
-
-    def value_from_datadict(self, data, files, name):
-        values = super().value_from_datadict(data, files, name)
-        return ','.join([x.replace(',', '|') for x in values])
-
-    def render_options(self, choices, selected_choices):
-        OPTION_SELECTED = '<option selected="selected" value="{}">{}</option>'
-        options = [x.replace('|', ',') for x in selected_choices.split(',')]
-        return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
+    formfield_overrides = {
+        ArrayField: {
+            'widget': ArrayTagWidget
+        },
+    }
 
 
 class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
