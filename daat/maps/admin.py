@@ -62,11 +62,11 @@ class ArrayTagWidget(Select2TagWidget):
 
     def value_from_datadict(self, data, files, name):
         values = super().value_from_datadict(data, files, name)
-        return ','.join(values)
+        return ','.join([x.replace(',', '|') for x in values])
 
     def render_options(self, choices, selected_choices):
         OPTION_SELECTED = '<option selected="selected" value="{}">{}</option>'
-        options = selected_choices.split(',')
+        options = [x.replace('|', ',') for x in selected_choices.split(',')]
         return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
 
 
