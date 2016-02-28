@@ -10,7 +10,10 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+
     place = PlaceSerializer(read_only=True)
+    project = serializers.SlugRelatedField(read_only=True, slug_field='title')
+
     class Meta:
         model = Event
-        fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'place', 'description', 'icon')
+        fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'place', 'description', 'icon', 'project')
