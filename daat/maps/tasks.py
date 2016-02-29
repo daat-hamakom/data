@@ -11,7 +11,7 @@ def gen_image_thumbnails(media):
     s3conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
     bucket = s3conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
-    orig = BytesIO(requests.get(media.file).content)
+    orig = Image.open(BytesIO(requests.get(media.file).content))
 
     for name, size in {'s': (40, 40), 'm': (320, 214)}.items():
         tmp = BytesIO()
