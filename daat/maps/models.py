@@ -3,10 +3,13 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
 
+from .tasks import gen_image_thumbnails
 from .utils import partial_date_validator
 
 
@@ -87,6 +90,12 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         elif self.url:
             self.type = 'link'
         super().save(*args, **kwargs)
+
+
+@receiver(post_save, sender=Media)
+def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
+    if created and instance.type == 'image':
+        gen_image_thumbnails(instance)
 
 
 class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
