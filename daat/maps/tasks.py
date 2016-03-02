@@ -13,7 +13,7 @@ def gen_image_thumbnails(media):
 
     orig = Image.open(BytesIO(requests.get(media.file).content))
 
-    for name, size in {'s': (40, 40), 'm': (320, 214)}.items():
+    for name, size in {'s': (50, 50), 'm': (320, 214)}.items():
         tmp = BytesIO()
         thumb = fit(orig, size, method=Image.BICUBIC)
         thumb.save(tmp, format='jpeg')
