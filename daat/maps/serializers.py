@@ -24,7 +24,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
-        fields = ('file', 'type')
+        fields = ('file', 'type', 'url')
 
 class EventSerializer(serializers.ModelSerializer):
 
