@@ -15,6 +15,11 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EventSerializer
 
 
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
 class SpriteJsonView(View):
     def get(self, *args, **kwargs):
         return JsonResponse(cache.get('sprites:json'))
