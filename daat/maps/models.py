@@ -218,6 +218,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     media = models.ManyToManyField(Media, blank=True, related_name='events')
+    media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
     project = models.ForeignKey(Project, related_name='events')
     next_event = models.ForeignKey('Event', blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
