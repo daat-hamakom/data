@@ -43,6 +43,12 @@ class ArrayTagWidget(Select2TagWidget):
         return '\n'.join([OPTION_SELECTED.format(opt, opt) for opt in options])
 
 
+class EventForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['media_icon'].queryset = Media.objects.filter(events__id=self.instance.pk)
+
+
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
     list_filter = ('creator', 'project', 'published')
@@ -50,6 +56,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
+    form = EventForm
 
 
 class MediaAdmin(CreatorMixin, admin.ModelAdmin):
