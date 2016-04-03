@@ -28,7 +28,7 @@ def gen_image_thumbnails(media):
     # create the medium sized thumbnail
     tmp = BytesIO()
     im = orig.copy()
-    im.thumbnail(320, 214)
+    im.thumbnail((320, 214))
     im.save(tmp, format='jpeg')
 
     tmp.seek(0)
@@ -41,7 +41,7 @@ def gen_image_thumbnails(media):
     # create the large sized thumbnail
     tmp = BytesIO()
     im = orig.copy()
-    im.thumbnail(1000, 1000)
+    im.thumbnail((1000, 1000))
     im.save(tmp, format='jpeg')
 
     tmp.seek(0)
