@@ -13,14 +13,38 @@ def gen_image_thumbnails(media):
 
     orig = Image.open(BytesIO(requests.get(media.file).content))
 
-    for name, size in {'s': (50, 50), 'm': (320, 214)}.items():
-        tmp = BytesIO()
-        thumb = fit(orig, size, method=Image.BICUBIC)
-        thumb.save(tmp, format='jpeg')
+    # create the small 50x50 icon
+    tmp = BytesIO()
+    thumb = fit(orig, (50, 50), method=Image.BICUBIC)
+    thumb.save(tmp, format='jpeg')
 
-        tmp.seek(0)
-        k = Key(bucket)
-        k.key = 'media_thumbs/{}_{}.jpg'.format(media.filename(), name)
-        k.set_contents_from_file(tmp)
-        k.make_public()
-        tmp.close()
+    tmp.seek(0)
+    k = Key(bucket)
+    k.key = 'media_thumbs/{}_{}.jpg'.format(media.filename(), 's')
+    k.set_contents_from_file(tmp)
+    k.make_public()
+    tmp.close()
+
+    # create the medium sized thumbnail
+    tmp = BytesIO()
+    thumb = Image.thumbnail(orig.copy(), (320, 214), method=Image.BICUBIC)
+    thumb.save(tmp, format='jpeg')
+
+    tmp.seek(0)
+    k = Key(bucket)
+    k.key = 'media_thumbs/{}_{}.jpg'.format(media.filename(), 'm')
+    k.set_contents_from_file(tmp)
+    k.make_public()
+    tmp.close()
+
+    # create the large sized thumbnail
+    tmp = BytesIO()
+    thumb = Image.thumbnail(orig.copy(), (1000, 1000), method=Image.BICUBIC)
+    thumb.save(tmp, format='jpeg')
+
+    tmp.seek(0)
+    k = Key(bucket)
+    k.key = 'media_thumbs/{}_{}.jpg'.format(media.filename(), 'l')
+    k.set_contents_from_file(tmp)
+    k.make_public()
+    tmp.close()
