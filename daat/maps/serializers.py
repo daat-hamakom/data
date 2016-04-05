@@ -30,7 +30,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
-        fields = ('file', 'type', 'url')
+        fields = ('file', 'type', 'url', 'title')
 
 
 class EventSerializer(serializers.ModelSerializer):
