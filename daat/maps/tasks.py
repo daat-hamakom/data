@@ -27,9 +27,8 @@ def gen_image_thumbnails(media):
 
     # create the medium sized thumbnail
     tmp = BytesIO()
-    im = orig.copy()
-    im.thumbnail((320, 214))
-    im.save(tmp, format='jpeg')
+    thumb = fit(orig, (320, 214), method=Image.BICUBIC)
+    thumb.save(tmp, format='jpeg')
 
     tmp.seek(0)
     k = Key(bucket)
@@ -37,6 +36,7 @@ def gen_image_thumbnails(media):
     k.set_contents_from_file(tmp)
     k.make_public()
     tmp.close()
+
 
     # create the large sized thumbnail
     tmp = BytesIO()
