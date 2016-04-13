@@ -14,5 +14,5 @@ class Command(BaseCommand):
             print(im)
             try:
                 gen_image_thumbnails(im)
-            except e:
+            except Exception as e:
                 print(e)
