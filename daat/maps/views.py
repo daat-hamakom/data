@@ -27,6 +27,11 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
 
 
+class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Annotation.objects.all()
+    serializer_class = AnnotationSerializer
+
+
 class SpriteJsonView(View):
     def get(self, *args, **kwargs):
         return JsonResponse(cache.get('sprites:json'))

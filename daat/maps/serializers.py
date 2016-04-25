@@ -44,3 +44,9 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'place',
             'description', 'icon', 'project', 'people', 'organizations', 'media')
+
+
+class AnnotationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Annotation
+        exclude = ('deleted', 'published')
