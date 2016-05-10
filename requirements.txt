@@ -5,17 +5,17 @@ boto==2.39.0
 celery==3.1.23
 contextlib2==0.5.1
 dj-database-url==0.3.0
-Django==1.9.5
-django-appconf==1.0.1
+Django==1.9.6
+django-appconf==1.0.2
 django-ckeditor==5.0.2
 django-cors-headers==1.1.0
 -e git+https://github.com/yuvadm/django-geoposition@ab2076aa7478030e8c4a53bec69e14e2da6c1f14#egg=django_geoposition
 django-guardian==1.3.2
 django-redis-cache==1.6.3
--e git+https://github.com/yuvadm/django-s3direct@20d02eef92d458dac890f1ab814ca146f2bd1853#egg=django_s3direct
+django-s3direct==0.3.15
 django-safedelete==0.3.1
-Django-Select2==5.8.0
-django-storages-redux==1.3
+Django-Select2==5.8.4
+django-storages-redux==1.3.2
 djangorestframework==3.3.3
 djangorestframework-csv==1.3.4
 gunicorn==19.4.5
@@ -26,6 +26,6 @@ psycopg2==2.6.1
 pytz==2016.4
 raven==5.13.0
 redis==2.10.5
-requests==2.9.1
+requests==2.10.0
 six==1.10.0
 whitenoise==3.0
