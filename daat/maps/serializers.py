@@ -43,7 +43,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'place',
-            'description', 'icon', 'project', 'people', 'organizations', 'media')
+            'description', 'icon', 'map_context', 'project', 'people', 'organizations', 'media')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
