@@ -251,13 +251,10 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     ANNOTATION_TYPES = (
-        ('correspondence', 'Correspondence'),
         ('group', 'Group'),
-        ('travel', 'Travel'),
-        ('trend', 'Trend'),
         ('reference', 'Reference'),
-        ('origin', 'Origin'),
-        ('quote', 'Quote'),
+        ('communication', 'Communication'),
+        ('path', 'Path')
     )
 
     places = models.ManyToManyField(Place, blank=True, related_name='annotations')
