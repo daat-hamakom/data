@@ -136,10 +136,21 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 
 
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
+
+    ZOOMLEVELS = (
+        ('area', 'Area'),
+        ('metropolis', 'Metropolis'),
+        ('largecity', 'Large City'),
+        ('city', 'City'),
+        ('town', 'Town'),
+        ('site', 'Site'),
+    )
+
     name = models.CharField(max_length=200)
     alt_name = ArrayField(models.CharField(max_length=300), blank=True, null=True,
         help_text='Multiple alternative names allowed, press Enter between entries')
     position = GeopositionField()
+    zoomlevel = models.CharField(max_length=20, choices=ZOOMLEVELS, default='city', verbose_name='Zoom level')
     area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 
     class Meta:
@@ -260,6 +271,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
+    title = models.CharField(max_length=160, blank=True, help_text='Group title (leave empty for all other annotation types)')
     description = RichTextField(blank=True)
     origin = models.ForeignKey(Event, blank=True, null=True)
     media = models.ManyToManyField(Media, blank=True, related_name='annotations')
