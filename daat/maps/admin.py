@@ -1,9 +1,9 @@
 from ckeditor.fields import RichTextField
 from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
-from django.forms import ModelForm, TextInput
+from django.forms import ModelForm, TextInput, ChoiceField
 from django.db import models
-from django_select2.forms import Select2TagWidget
+from django_select2.forms import Select2Widget, Select2TagWidget
 
 from .models import *
 
@@ -44,12 +44,24 @@ class ArrayTagWidget(Select2TagWidget):
 
 
 class EventForm(ModelForm):
+    class Meta:
+        model = Event
+        exclude = ('deleted',)
+        widgets = {
+            'place': Select2Widget,
+            'next_event': Select2Widget
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['media_icon'].queryset = Media.objects.filter(events__id=self.instance.pk)
 
 
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
+
+    class Media:
+        js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
     list_filter = ('creator', 'project', 'published')
     filter_horizontal = ('people', 'organizations', 'media',)
@@ -85,6 +97,9 @@ class PersonAdmin(CreatorMixin, admin.ModelAdmin):
         ArrayField: {
             'widget': ArrayTagWidget
         },
+        models.ForeignKey: {
+            'widget': Select2Widget
+        }
     }
 
 
@@ -102,10 +117,19 @@ class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
+
+    class Media:
+        js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+
     list_display = ('title', 'subtitle')
     list_filter = ('creator', 'researchers')
     filter_horizontal = ('researchers',)
     exclude = ('deleted',)
+    formfield_overrides = {
+        models.ForeignKey: {
+            'widget': Select2Widget
+        }
+    }
 
 
 class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
@@ -113,12 +137,22 @@ class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
 
 
 class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
+
+    class Media:
+        js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+
     list_display = ('all_events', 'type', 'published')
     list_filter = ('events__project', 'published', 'creator')
     filter_horizontal = ('places', 'events', 'media')
     exclude = ('deleted',)
     actions = [make_published]
     save_as = True
+
+    formfield_overrides = {
+        models.ForeignKey: {
+            'widget': Select2Widget
+        },
+    }
 
 
 admin.site.register(Event, EventAdmin)
