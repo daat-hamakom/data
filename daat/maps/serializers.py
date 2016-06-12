@@ -6,7 +6,7 @@ from .models import *
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'name', 'position')
+        fields = ('id', 'name', 'position', 'zoomlevel')
 
 
 class PersonSerializer(serializers.ModelSerializer):
