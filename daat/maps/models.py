@@ -223,6 +223,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     description = RichTextField(blank=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
+    circa_date = models.BooleanField(default=False)
     place = models.ForeignKey(Place, related_name='events')
     political_entity = models.CharField(max_length=200, blank=True)
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
