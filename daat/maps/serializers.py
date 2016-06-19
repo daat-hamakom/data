@@ -15,8 +15,15 @@ class PersonSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'middle_name', 'last_name')
 
 
+class MediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Media
+        fields = ('file', 'type', 'url', 'title')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     researchers = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
+    cover_image = MediaSerializer(read_only=True)
     class Meta:
         model = Project
 
@@ -25,12 +32,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ('id', 'name')
-
-
-class MediaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Media
-        fields = ('file', 'type', 'url', 'title')
 
 
 class EventSerializer(serializers.ModelSerializer):
