@@ -112,6 +112,10 @@ class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
+    @property
+    def name(self):
+        return self.__str__()
+
 
 class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=150)

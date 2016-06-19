@@ -16,9 +16,9 @@ class PersonSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    researchers = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle')
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
