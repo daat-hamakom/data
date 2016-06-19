@@ -30,3 +30,8 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
 class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
+
+
+class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Place.objects.all()
+    serializer_class = PlaceSerializer

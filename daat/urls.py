@@ -11,6 +11,7 @@ router = DefaultRouter()
 router.register(r'events', EventViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'annotations', AnnotationViewSet)
+router.register(r'places', PlaceViewSet)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),
