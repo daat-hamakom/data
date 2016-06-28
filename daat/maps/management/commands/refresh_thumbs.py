@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.management.base import BaseCommand, CommandError
 
-from daat.maps.utils import SpriteCreator
 from daat.maps.models import *
 from daat.maps.tasks import gen_image_thumbnails
 
