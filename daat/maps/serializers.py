@@ -46,6 +46,12 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'circa_date', 'place',
             'description', 'icon', 'map_context', 'project', 'people', 'organizations', 'media')
 
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related('place')
+        queryset = queryset.prefetch_related('people', 'organizations', 'media')
+        return queryset
+
 
 class AnnotationSerializer(serializers.ModelSerializer):
     class Meta:

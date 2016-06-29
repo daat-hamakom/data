@@ -19,6 +19,8 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         proj_id = self.request.query_params.get('project', None)
         if proj_id is not None:
             queryset = queryset.filter(project_id=proj_id)
+
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
         return queryset
 
 
