@@ -49,7 +49,8 @@ class EventForm(ModelForm):
         exclude = ('deleted',)
         widgets = {
             'place': Select2Widget,
-            'next_event': Select2Widget
+            'next_event': Select2Widget,
+            'tags': ArrayTagWidget
         }
 
     def __init__(self, *args, **kwargs):
