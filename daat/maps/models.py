@@ -234,7 +234,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
     tags = ArrayField(models.CharField(max_length=300), blank=True, null=True,
-        help_text='Multiple alternative names allowed, press Enter between entries')
+        help_text='Multiple tags allowed, press Enter between entries')
     media = models.ManyToManyField(Media, blank=True, related_name='events')
     media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
     project = models.ForeignKey(Project, related_name='events')
