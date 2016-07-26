@@ -57,3 +57,18 @@ class AnnotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Annotation
         exclude = ('deleted', 'published')
+
+
+class FullPersonSerializer(serializers.ModelSerializer):
+    profile_image = MediaSerializer(read_only=True)
+    class Meta:
+        model = Person
+        fields = ('id', 'first_name', 'middle_name', 'last_name', 'title', 'alt_name',
+            'birth_date', 'death_date', 'biography', 'profile_image')
+
+
+class FullOrganizationSerializer(serializers.ModelSerializer):
+    cover_image = MediaSerializer(read_only=True)
+    class Meta:
+        model = Organization
+        fields = ('id', 'name', 'alt_name', 'type', 'start_date', 'end_date', 'description', 'cover_image')

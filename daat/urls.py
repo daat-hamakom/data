@@ -12,6 +12,8 @@ router.register(r'events', EventViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'annotations', AnnotationViewSet)
 router.register(r'places', PlaceViewSet)
+router.register(r'people', PersonViewSet)
+router.register(r'organizations', OrganizationViewSet)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),

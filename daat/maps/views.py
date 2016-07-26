@@ -37,3 +37,13 @@ class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
+
+
+class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Person.objects.all()
+    serializer_class = FullPersonSerializer
+
+
+class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = FullOrganizationSerializer
