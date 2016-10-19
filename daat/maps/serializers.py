@@ -70,6 +70,8 @@ class FullPersonSerializer(serializers.ModelSerializer):
 
 class FullOrganizationSerializer(serializers.ModelSerializer):
     cover_image = MediaSerializer(read_only=True)
+    places = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
     class Meta:
         model = Organization
-        fields = ('id', 'name', 'alt_name', 'type', 'start_date', 'end_date', 'description', 'cover_image')
+        fields = ('id', 'name', 'alt_name', 'type', 'start_date', 'end_date', 'description',
+                  'cover_image', 'places')
