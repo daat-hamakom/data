@@ -61,10 +61,11 @@ class AnnotationSerializer(serializers.ModelSerializer):
 
 class FullPersonSerializer(serializers.ModelSerializer):
     profile_image = MediaSerializer(read_only=True)
+    places = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
     class Meta:
         model = Person
         fields = ('id', 'first_name', 'middle_name', 'last_name', 'title', 'alt_name',
-            'birth_date', 'death_date', 'biography', 'profile_image')
+                  'birth_date', 'death_date', 'biography', 'profile_image', 'places')
 
 
 class FullOrganizationSerializer(serializers.ModelSerializer):
