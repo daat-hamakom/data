@@ -44,7 +44,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'subtitle', 'start_date', 'end_date', 'circa_date', 'place',
-            'description', 'icon', 'map_context', 'project', 'people', 'organizations', 'media')
+            'description', 'icon', 'map_context', 'project', 'people', 'organizations', 'media', 'tags')
 
     @staticmethod
     def setup_eager_loading(queryset):
