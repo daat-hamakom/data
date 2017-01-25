@@ -10,7 +10,15 @@ from .models import *
 from .serializers import *
 
 
-class EventViewSet(viewsets.ReadOnlyModelViewSet):
+class CacheViewSet(viewsets.ReadOnlyModelViewSet):
+    def list(self, request):
+        response = super(CacheViewSet, self).list(request)
+        response['Cache-Control'] = 'max-age=3600'
+
+        return response
+
+
+class EventViewSet(CacheViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -24,26 +32,30 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectViewSet(CacheViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
 
-class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
+class AnnotationViewSet(CacheViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(CacheViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
 
 
-class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+class PersonViewSet(CacheViewSet):
     queryset = Person.objects.all()
     serializer_class = FullPersonSerializer
 
 
-class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
+class OrganizationViewSet(CacheViewSet):
     queryset = Organization.objects.all()
     serializer_class = FullOrganizationSerializer
+
+
+
+
