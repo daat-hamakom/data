@@ -5,15 +5,17 @@ from django.views.generic import View
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework_extensions.cache.decorators import cache_response
 
 from .models import *
 from .serializers import *
 
 
 class CacheViewSet(viewsets.ReadOnlyModelViewSet):
+    @cache_response()
     def list(self, request):
         response = super(CacheViewSet, self).list(request)
-        response['Cache-Control'] = 'max-age=3600'
+        response['Cache-Control'] = 'public, max-age=36000000'
 
         return response
 
