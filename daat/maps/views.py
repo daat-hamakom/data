@@ -5,22 +5,12 @@ from django.views.generic import View
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework_extensions.cache.decorators import cache_response
 
 from .models import *
 from .serializers import *
 
 
-class CacheViewSet(viewsets.ReadOnlyModelViewSet):
-    @cache_response(60 * 1)
-    def list(self, request):
-        response = super(CacheViewSet, self).list(request)
-        response['Cache-Control'] = 'public, max-age=60'
-
-        return response
-
-
-class EventViewSet(CacheViewSet):
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -34,27 +24,27 @@ class EventViewSet(CacheViewSet):
         return queryset
 
 
-class ProjectViewSet(CacheViewSet):
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
 
-class AnnotationViewSet(CacheViewSet):
+class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
 
-class PlaceViewSet(CacheViewSet):
+class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
 
 
-class PersonViewSet(CacheViewSet):
+class PersonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.all()
     serializer_class = FullPersonSerializer
 
 
-class OrganizationViewSet(CacheViewSet):
+class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = FullOrganizationSerializer
 
