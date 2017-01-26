@@ -12,10 +12,10 @@ from .serializers import *
 
 
 class CacheViewSet(viewsets.ReadOnlyModelViewSet):
-    @cache_response(60 * 30)
+    @cache_response(60 * 1)
     def list(self, request):
         response = super(CacheViewSet, self).list(request)
-        response['Cache-Control'] = 'public, max-age=36000000'
+        response['Cache-Control'] = 'public, max-age=60'
 
         return response
 
