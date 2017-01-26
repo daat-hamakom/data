@@ -5,12 +5,35 @@ from django.views.generic import View
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
-
+from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.utils import default_cache_key_func
 from .models import *
 from .serializers import *
+import time
+
+MAX_CACHE_TIME = 60
 
 
-class EventViewSet(viewsets.ReadOnlyModelViewSet):
+#  todo - investigate why the timeout dont work
+class CacheViewSet(viewsets.ReadOnlyModelViewSet):
+    @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
+    def list(self, request):
+        response = super(CacheViewSet, self).list(request)
+        response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
+
+        return response
+
+    # hotfix - timeout doesnt work
+    def calculate_cache_key(self, view_instance, view_method,
+                                request, args, kwargs):
+        timestamp = int(time.time()/MAX_CACHE_TIME)
+
+        default_key = default_cache_key_func(view_instance=view_instance, view_method=view_method, request=request,
+                                             args=args, kwargs=kwargs)
+        return '-'.join([default_key, str(timestamp)])
+
+
+class EventViewSet(CacheViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -24,27 +47,27 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectViewSet(CacheViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
 
-class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
+class AnnotationViewSet(CacheViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(CacheViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
 
 
-class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+class PersonViewSet(CacheViewSet):
     queryset = Person.objects.all()
     serializer_class = FullPersonSerializer
 
 
-class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
+class OrganizationViewSet(CacheViewSet):
     queryset = Organization.objects.all()
     serializer_class = FullOrganizationSerializer
 
