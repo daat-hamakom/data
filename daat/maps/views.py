@@ -19,7 +19,7 @@ class CacheViewSet(viewsets.ReadOnlyModelViewSet):
     @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
     def list(self, request):
         response = super(CacheViewSet, self).list(request)
-        response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
+        # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
 
         return response
 
