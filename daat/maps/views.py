@@ -11,7 +11,7 @@ from .models import *
 from .serializers import *
 import time
 
-MAX_CACHE_TIME = 60
+MAX_CACHE_TIME = 3600
 
 
 #  todo - investigate why the timeout dont work
@@ -26,11 +26,7 @@ class CacheViewSet(viewsets.ReadOnlyModelViewSet):
     # hotfix - timeout doesnt work
     def calculate_cache_key(self, view_instance, view_method,
                                 request, args, kwargs):
-        timestamp = int(time.time()/MAX_CACHE_TIME)
-
-        default_key = default_cache_key_func(view_instance=view_instance, view_method=view_method, request=request,
-                                             args=args, kwargs=kwargs)
-        return '-'.join([default_key, str(timestamp)])
+        return request.path
 
 
 class EventViewSet(CacheViewSet):

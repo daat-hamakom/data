@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.cache import cache
+
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
@@ -265,6 +267,11 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
                 return person_media.file
 
         return self.project.cover_image.file
+
+
+@receiver(post_save, sender=Event)
+def clear_event_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/events/')
 
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
