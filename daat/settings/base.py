@@ -110,6 +110,3 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-from memcacheify import memcacheify
-
-CACHES = memcacheify()
