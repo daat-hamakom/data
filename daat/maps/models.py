@@ -53,6 +53,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
     copyrights = models.CharField(max_length=200, help_text='For no copyrights use "Public Domain"')
+    remarks = RichTextField(blank=True)
 
     class Meta:
         verbose_name_plural = 'media'
