@@ -16,7 +16,7 @@ DATABASES = {
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY')
 
-BROKER_URL = REDIS_URL = environ.get('REDISCLOUD_URL')
+BROKER_URL = REDIS_URL = environ.get('REDIS_URL')
 redis_url = urlparse(REDIS_URL)
 
 CACHES = {
