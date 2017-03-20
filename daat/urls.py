@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^s3direct/', include('s3direct.urls')),
     url(r'^select2/', include('django_select2.urls')),
 ]
-#
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
