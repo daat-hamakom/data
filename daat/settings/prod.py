@@ -43,6 +43,10 @@ INSTALLED_APPS += (
 CELERY_ALWAYS_EAGER = True
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_DIRS = [
+    PROJECT_DIR.joinpath("static"),
+    '/var/www/static/',
+]
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
 STATIC_URL = '/static/'
 
