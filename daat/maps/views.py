@@ -6,18 +6,27 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework_extensions.cache.decorators import cache_response
-
+from rest_framework_extensions.utils import default_cache_key_func
 from .models import *
 from .serializers import *
+import time
+
+MAX_CACHE_TIME = 3600
 
 
+#  todo - investigate why the timeout dont work
 class CacheViewSet(viewsets.ReadOnlyModelViewSet):
-    @cache_response(60 * 30)
+    @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
     def list(self, request):
         response = super(CacheViewSet, self).list(request)
-        response['Cache-Control'] = 'public, max-age=36000000'
+        # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
 
         return response
+
+    # hotfix - timeout doesnt work
+    def calculate_cache_key(self, view_instance, view_method,
+                                request, args, kwargs):
+        return request.path
 
 
 class EventViewSet(CacheViewSet):

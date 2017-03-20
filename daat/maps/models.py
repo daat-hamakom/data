@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.cache import cache
+
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
@@ -51,7 +53,8 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=200, unique=True)
     source = models.CharField(max_length=200, blank=True)
     source_url = models.CharField(max_length=500, blank=True)
-    copyrights = models.CharField(max_length=200, help_text='For no copyrights use "Public Domain"')
+    copyrights = models.CharField(max_length=200, blank=True, help_text='For no copyrights use "Public Domain"')
+    remarks = RichTextField(blank=True)
 
     class Meta:
         verbose_name_plural = 'media'
@@ -141,6 +144,11 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
                 raise ValidationError({'end_date': 'End date must occur after start date'})
 
 
+@receiver(post_save, sender=Project)
+def clear_project_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/projects/')
+
+
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
 
     ZOOMLEVELS = (
@@ -164,6 +172,11 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
 
     def __str__(self):
         return self.name
+
+
+@receiver(post_save, sender=Place)
+def clear_place_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/places/')
 
 
 class Person(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -191,6 +204,11 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
                 raise ValidationError({'death_date': 'Death date must occur after birth date'})
 
 
+@receiver(post_save, sender=Person)
+def clear_person_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/people/')
+
+
 class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=150)
     alt_name = models.CharField(max_length=150, blank=True)
@@ -211,6 +229,11 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
         if self.end_date:
             if self.end_date < self.start_date:
                 raise ValidationError({'end_date': 'End date must occur after start date'})
+
+
+@receiver(post_save, sender=Organization)
+def clear_organization_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/organizations/')
 
 
 class Event(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -269,6 +292,11 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
         return self.project.cover_image.file
 
 
+@receiver(post_save, sender=Event)
+def clear_event_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/events/')
+
+
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
     ANNOTATION_TYPES = (
         ('group', 'Group'),
@@ -292,3 +320,8 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
 
     def all_events(self):
         return str(self)
+
+
+@receiver(post_save, sender=Annotation)
+def clear_annotation_cache(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/annotations/')
