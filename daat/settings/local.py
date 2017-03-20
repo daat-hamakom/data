@@ -19,7 +19,3 @@ MEDIA_URL = '/media/'
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ('rest_framework.renderers.BrowsableAPIRenderer',)
 
 CELERY_ALWAYS_EAGER = True
-
-STATICFILES_DIRS = [
-    PROJECT_DIR.joinpath("static"),
-]

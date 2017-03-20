@@ -111,3 +111,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+STATICFILES_DIRS = [
+    str(PROJECT_DIR / "static"),
+]
