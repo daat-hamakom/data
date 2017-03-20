@@ -46,7 +46,7 @@ class ArrayTagWidget(Select2TagWidget):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        exclude = ('deleted',)
+        exclude = ('deleted', 'subtitle', )
         widgets = {
             'place': Select2Widget,
             'next_event': Select2Widget,
@@ -62,6 +62,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
 
     class Media:
         js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
+        css = {'all': ('/static/stylesheets/admin.css', ) }
 
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
     list_filter = ('creator', 'project', 'published')
@@ -117,6 +118,19 @@ class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
     }
 
 
+class ProjectForm(ModelForm):
+    class Meta:
+        model = Project
+        exclude = ('deleted',)
+        widgets = {
+            'cover_image': Select2Widget,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cover_image'].required = True
+
+
 class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
 
     class Media:
@@ -125,12 +139,7 @@ class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('title', 'subtitle')
     list_filter = ('creator', 'researchers')
     filter_horizontal = ('researchers',)
-    exclude = ('deleted',)
-    formfield_overrides = {
-        models.ForeignKey: {
-            'widget': Select2Widget
-        }
-    }
+    form = ProjectForm
 
 
 class ResearcherAdmin(CreatorMixin, admin.ModelAdmin):
@@ -145,7 +154,7 @@ class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     list_display = ('all_events', 'type', 'published')
     list_filter = ('events__project', 'published', 'creator')
     filter_horizontal = ('places', 'events', 'media')
-    exclude = ('deleted',)
+    exclude = ('deleted', 'media')
     actions = [make_published]
     save_as = True
 
