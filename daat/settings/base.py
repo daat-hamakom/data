@@ -112,5 +112,5 @@ CKEDITOR_CONFIGS = {
 }
 
 STATICFILES_DIRS = [
-    PROJECT_DIR.joinpath("static"),
+    # PROJECT_DIR.joinpath("static"),
 ]
