@@ -67,10 +67,13 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
         css = {'all': ('/static/stylesheets/admin.css', ) }
 
     def words_count(self):
-        cleanr = re.compile('<.*?>')
-        cleantext = re.sub(cleanr, '', html.unescape(self.description))
+        try:
+            cleanr = re.compile('<.*?>')
+            cleantext = re.sub(cleanr, '', html.unescape(self.description))
 
-        return len(' '.join([self.title, cleantext]).split())
+            return len(' '.join([self.title, cleantext]).split())
+        except Exception:
+            return '?'
     words_count.short_description = 'Word Count'
 
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'edit_mode', 'published', words_count)
