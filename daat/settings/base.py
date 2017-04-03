@@ -3,7 +3,7 @@ import os
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = 'temporary_secret_key_replaced_later'
 
