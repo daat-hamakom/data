@@ -18,7 +18,7 @@ class PersonSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
-        fields = ('file', 'type', 'url', 'title')
+        fields = ('file', 'type', 'url', 'title', 'source', 'source_url', 'copyrights')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
