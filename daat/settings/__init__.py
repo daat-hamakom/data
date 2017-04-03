@@ -1,6 +1,6 @@
 from os import environ
 
-if 'PROD2' in environ:
+if 'PROD' in environ:
 	from .prod import *
 else:
 	from .local import *
