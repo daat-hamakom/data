@@ -1,4 +1,6 @@
 from ckeditor.fields import RichTextField
+import re
+import html
 from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
 from django.forms import ModelForm, TextInput, ChoiceField
@@ -64,7 +66,14 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
         js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
         css = {'all': ('/static/stylesheets/admin.css', ) }
 
-    list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published')
+    def words_count(self):
+        cleanr = re.compile('<.*?>')
+        cleantext = re.sub(cleanr, '', html.unescape(self.description))
+
+        return len(' '.join([self.title, cleantext]).split())
+    words_count.short_description = 'Word Count'
+
+    list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'edit_mode', 'published', words_count)
     list_filter = ('creator', 'project', 'published')
     filter_horizontal = ('people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')

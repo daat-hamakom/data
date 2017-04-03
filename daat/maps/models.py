@@ -246,6 +246,12 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
         ('world', 'World'),
     )
 
+    EDITING_MODE = (
+        ('Edited', 'Edited'),
+        ('NotEdited', 'Not Edited'),
+        ('Pending', 'Pending'),
+    )
+
     published = models.BooleanField(default=False)
     project = models.ForeignKey(Project, related_name='events')
     title = models.CharField(max_length=160)
@@ -264,6 +270,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
     next_event = models.ForeignKey('Event', blank=True, null=True)
+    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, blank=True, default='NotEdited')
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
