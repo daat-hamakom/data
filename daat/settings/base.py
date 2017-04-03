@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
@@ -110,3 +111,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+STATICFILES_DIRS = [
+    str(PROJECT_DIR / "static"),
+]

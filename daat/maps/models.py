@@ -17,6 +17,7 @@ from .utils import partial_date_validator
 
 SafeDeleteMixin = safedelete_mixin_factory(policy=SOFT_DELETE, visibility=DELETED_VISIBLE_BY_PK)
 
+
 def concat_category(i, f):
     return '{}/{}'.format(i.category, f)
 
@@ -123,11 +124,12 @@ class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
 class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     title = models.CharField(max_length=150)
     subtitle = models.CharField(max_length=150, blank=True)
-    supported_by = models.CharField(max_length=200, blank=True)
     researchers = models.ManyToManyField(Researcher, blank=True, related_name='projects')
     synopsis = RichTextField(blank=True)
     cover_image = models.ForeignKey(Media, blank=True, null=True)
-    start_date = PartialDateCharField()
+    attribution_line = models.CharField(max_length=200, blank=True)
+    supported_by = models.CharField(max_length=200, blank=True)
+    start_date = PartialDateCharField(blank=True)
     end_date = PartialDateCharField(blank=True)
 
     class Meta:
@@ -245,22 +247,22 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     )
 
     published = models.BooleanField(default=False)
+    project = models.ForeignKey(Project, related_name='events')
     title = models.CharField(max_length=160)
     subtitle = models.CharField(max_length=160, blank=True)
     description = RichTextField(blank=True)
+    place = models.ForeignKey(Place, related_name='events')
+    political_entity = models.CharField(max_length=200, blank=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
     circa_date = models.BooleanField(default=False)
-    place = models.ForeignKey(Place, related_name='events')
-    political_entity = models.CharField(max_length=200, blank=True)
-    map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
+    tags = ArrayField(models.CharField(max_length=300), blank=True, null=True,
+                      help_text='Multiple tags allowed, press Enter between entries')
+    media = models.ManyToManyField(Media, blank=True, related_name='events')
     people = models.ManyToManyField(Person, blank=True, related_name='events')
     organizations = models.ManyToManyField(Organization, blank=True, related_name='events')
-    tags = ArrayField(models.CharField(max_length=300), blank=True, null=True,
-        help_text='Multiple tags allowed, press Enter between entries')
-    media = models.ManyToManyField(Media, blank=True, related_name='events')
+    map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
-    project = models.ForeignKey(Project, related_name='events')
     next_event = models.ForeignKey('Event', blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -303,12 +305,12 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
         ('path', 'Path')
     )
 
-    places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     events = models.ManyToManyField(Event, related_name='annotations')
     type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
-    title = models.CharField(max_length=160, blank=True, help_text='Group title (leave empty for all other annotation types)')
-    description = RichTextField(blank=True)
     origin = models.ForeignKey(Event, blank=True, null=True)
+    title = models.CharField(max_length=160, blank=True, verbose_name='Group title')
+    description = RichTextField(blank=True, verbose_name='Group description')
+    places = models.ManyToManyField(Place, blank=True, related_name='annotations')
     media = models.ManyToManyField(Media, blank=True, related_name='annotations')
     published = models.BooleanField(default=False)
 

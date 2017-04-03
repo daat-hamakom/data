@@ -1,0 +1,3 @@
+.deletelink, input[name="_addanother"], input[name="_continue"]{
+    display: none;
+}
