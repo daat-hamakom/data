@@ -14,6 +14,11 @@ from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, S
 from .tasks import gen_image_thumbnails
 from .utils import partial_date_validator
 
+EDITING_MODE = (
+        ('Edited', 'Edited'),
+        ('NotEdited', 'Not Edited'),
+        ('Pending', 'Pending'),
+    )
 
 SafeDeleteMixin = safedelete_mixin_factory(policy=SOFT_DELETE, visibility=DELETED_VISIBLE_BY_PK)
 
@@ -131,6 +136,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
     supported_by = models.CharField(max_length=200, blank=True)
     start_date = PartialDateCharField(blank=True)
     end_date = PartialDateCharField(blank=True)
+    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
 
     class Meta:
         ordering = ['title']
@@ -191,6 +197,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     biography = RichTextField(blank=True)
     profile_image = models.ForeignKey(Media, blank=True, null=True)
     places = models.ManyToManyField(Place, blank=True)
+    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
 
     class Meta:
         ordering = ['first_name']
@@ -218,6 +225,7 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
+    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
 
     class Meta:
         ordering = ['name']
@@ -246,12 +254,6 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
         ('world', 'World'),
     )
 
-    EDITING_MODE = (
-        ('Edited', 'Edited'),
-        ('NotEdited', 'Not Edited'),
-        ('Pending', 'Pending'),
-    )
-
     published = models.BooleanField(default=False)
     project = models.ForeignKey(Project, related_name='events')
     title = models.CharField(max_length=160)
@@ -270,7 +272,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
     next_event = models.ForeignKey('Event', blank=True, null=True)
-    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, blank=True, default='NotEdited')
+    edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:

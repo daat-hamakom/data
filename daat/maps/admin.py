@@ -76,7 +76,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
             return '?'
     words_count.short_description = 'Word Count'
 
-    list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'edit_mode', 'published', words_count)
+    list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published', 'edit_mode', words_count)
     list_filter = ('creator', 'project', 'published')
     filter_horizontal = ('people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
@@ -100,7 +100,17 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
     class Media:
         css = {'all': ('/static/stylesheets/admin.css',)}
 
-    list_display = ('name', 'type')
+    def words_count(self):
+        try:
+            cleanr = re.compile('<.*?>')
+            cleantext = re.sub(cleanr, '', html.unescape(self.description))
+
+            return len(cleantext.split())
+        except Exception:
+            return '?'
+    words_count.short_description = 'Word Count'
+
+    list_display = ('name', 'type', 'edit_mode', words_count)
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
@@ -112,8 +122,17 @@ class PersonAdmin(CreatorMixin, admin.ModelAdmin):
         js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
         css = {'all': ('/static/stylesheets/admin.css',)}
 
+    def words_count(self):
+        try:
+            cleanr = re.compile('<.*?>')
+            cleantext = re.sub(cleanr, '', html.unescape(self.biography))
 
-    list_display = ('last_name', 'title', 'first_name')
+            return len(cleantext.split())
+        except Exception:
+            return '?'
+    words_count.short_description = 'Word Count'
+
+    list_display = ('last_name', 'title', 'first_name', 'edit_mode', words_count)
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
@@ -162,7 +181,17 @@ class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
         js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
         css = {'all': ('/static/stylesheets/admin.css',)}
 
-    list_display = ('title', 'subtitle')
+    def words_count(self):
+        try:
+            cleanr = re.compile('<.*?>')
+            cleantext = re.sub(cleanr, '', html.unescape(self.synopsis))
+
+            return len(' '.join([self.title, self.subtitle, cleantext]).split())
+        except Exception:
+            return '?'
+    words_count.short_description = 'Word Count'
+
+    list_display = ('title', 'subtitle', 'edit_mode', words_count)
     list_filter = ('creator', 'researchers')
     filter_horizontal = ('researchers',)
     form = ProjectForm
