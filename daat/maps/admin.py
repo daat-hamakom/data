@@ -77,7 +77,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
     words_count.short_description = 'Word Count'
 
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published', 'edit_mode', words_count)
-    list_filter = ('creator', 'project', 'published')
+    list_filter = ('project', 'published', 'creator')
     filter_horizontal = ('people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
     actions = [make_published]
@@ -192,7 +192,7 @@ class ProjectAdmin(CreatorMixin, admin.ModelAdmin):
     words_count.short_description = 'Word Count'
 
     list_display = ('title', 'subtitle', 'edit_mode', words_count)
-    list_filter = ('creator', 'researchers')
+    list_filter = ('researchers', 'creator')
     filter_horizontal = ('researchers',)
     form = ProjectForm
 
