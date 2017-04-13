@@ -11,7 +11,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('id', 'name', 'position', 'zoomlevel', 'alt_name')
+        fields = ('id', 'name', 'position', 'zoomlevel', 'alt_name', 'events_count')
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organization
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'events_count')
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -82,16 +82,26 @@ class AnnotationSerializer(serializers.ModelSerializer):
 class FullPersonSerializer(serializers.ModelSerializer):
     profile_image = MediaSerializer(read_only=True)
     places = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Person
         fields = ('id', 'first_name', 'middle_name', 'last_name', 'title', 'alt_name',
-                  'birth_date', 'death_date', 'biography', 'profile_image', 'places')
+                  'birth_date', 'death_date', 'biography', 'profile_image', 'places', 'events_count')
 
 
 class FullOrganizationSerializer(serializers.ModelSerializer):
     cover_image = MediaSerializer(read_only=True)
     places = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Organization
         fields = ('id', 'name', 'alt_name', 'type', 'start_date', 'end_date', 'description',
-                  'cover_image', 'places')
+                  'cover_image', 'places', 'events_count')
