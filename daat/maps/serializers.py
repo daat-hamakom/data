@@ -4,12 +4,22 @@ from .models import *
 
 
 class PlaceSerializer(serializers.ModelSerializer):
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Place
-        fields = ('id', 'name', 'position', 'zoomlevel')
+        fields = ('id', 'name', 'position', 'zoomlevel', 'alt_name')
 
 
 class PersonSerializer(serializers.ModelSerializer):
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Person
         fields = ('id', 'first_name', 'middle_name', 'last_name')
@@ -24,11 +34,21 @@ class MediaSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     researchers = serializers.SlugRelatedField(read_only=True, many=True, slug_field='name')
     cover_image = MediaSerializer(read_only=True)
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Project
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
+    events_count = serializers.SerializerMethodField()
+
+    def get_events_count(self, obj):
+        return obj.events.count()
+
     class Meta:
         model = Organization
         fields = ('id', 'name')
