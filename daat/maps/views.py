@@ -59,7 +59,7 @@ class PlaceViewSet(CacheViewSet):
 
 
 class PersonViewSet(CacheViewSet):
-    queryset = Person.objects.all()
+    queryset = Person.objects.all().order_by('last_name')
     serializer_class = FullPersonSerializer
 
 
