@@ -171,6 +171,7 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
         help_text='Multiple alternative names allowed, press Enter between entries')
     position = GeopositionField()
     zoomlevel = models.CharField(max_length=20, choices=ZOOMLEVELS, default='city', verbose_name='Zoom level')
+    viaf_id = models.CharField(max_length=160, blank=True)
     area = JSONField(blank=True, null=True, help_text='Paste any custom <a href="http://geojson.io">GeoJSON</a> here')
 
     class Meta:
@@ -197,6 +198,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
     biography = RichTextField(blank=True)
     profile_image = models.ForeignKey(Media, blank=True, null=True)
     places = models.ManyToManyField(Place, blank=True)
+    viaf_id = models.CharField(max_length=160, blank=True)
     edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
 
     class Meta:
@@ -225,6 +227,7 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
     cover_image = models.ForeignKey(Media, blank=True, null=True)
     start_date = PartialDateCharField()
     end_date = PartialDateCharField(blank=True)
+    viaf_id = models.CharField(max_length=160, blank=True)
     edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
 
     class Meta:

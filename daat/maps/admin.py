@@ -110,7 +110,7 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
             return '?'
     words_count.short_description = 'Word Count'
 
-    list_display = ('name', 'type', 'edit_mode', words_count)
+    list_display = ('name', 'type', 'viaf_id', 'edit_mode', words_count)
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
@@ -132,7 +132,7 @@ class PersonAdmin(CreatorMixin, admin.ModelAdmin):
             return '?'
     words_count.short_description = 'Word Count'
 
-    list_display = ('last_name', 'title', 'first_name', 'edit_mode', words_count)
+    list_display = ('id', 'last_name', 'first_name', 'viaf_id', 'edit_mode', words_count)
     list_filter = ('creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
@@ -152,6 +152,7 @@ class PlaceAdmin(CreatorMixin, admin.ModelAdmin):
         js = ('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',)
         css = {'all': ('/static/stylesheets/admin.css',)}
 
+    list_display = ('id', 'name', 'zoomlevel', 'viaf_id')
     exclude = ('deleted',)
     formfield_overrides = {
         ArrayField: {
