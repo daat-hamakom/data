@@ -222,6 +222,12 @@ class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     }
 
 
+class ImportAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'target_project', 'status')
+    exclude = ('deleted',)
+    readonly_fields = ('status', 'error_log')
+
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Organization, OrganizationAdmin)
@@ -230,3 +236,4 @@ admin.site.register(Place, PlaceAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Researcher, ResearcherAdmin)
 admin.site.register(Annotation, AnnotationAdmin)
+admin.site.register(Import, ImportAdmin)

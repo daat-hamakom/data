@@ -11,7 +11,6 @@ from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
 
-from .tasks import gen_image_thumbnails
 from .utils import partial_date_validator
 
 EDITING_MODE = (
@@ -99,12 +98,6 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         elif self.url:
             self.type = 'link'
         super().save(*args, **kwargs)
-
-
-@receiver(post_save, sender=Media)
-def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
-    if created and instance.type == 'image':
-        gen_image_thumbnails(instance)
 
 
 class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -337,3 +330,30 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
 @receiver(post_save, sender=Annotation)
 def clear_annotation_cache(sender, instance=None, created=False, **kwargs):
     cache.delete('/api/annotations/')
+
+
+class Import(CreatorPermissionsMixin, SafeDeleteMixin):
+    STATUSES = (
+        ('new', 'New'),
+        ('uploading', 'uploading'),
+        ('uploaded', 'uploaded'),
+        ('testing', 'Testing'),
+        ('invalid', 'Invalid'),
+        ('valid', 'Valid'),
+    )
+
+    project = models.CharField(max_length=160, verbose_name='Temp Project Name')
+    target_project = models.ForeignKey(Project, related_name='imports')
+    description1_subtitle = models.CharField(max_length=160, blank=True)
+    description2_subtitle = models.CharField(max_length=160, blank=True)
+    description3_subtitle = models.CharField(max_length=160, blank=True)
+    copyrights = models.CharField(max_length=160, blank=True)
+    copyrights_source_url = models.CharField(max_length=160, blank=True)
+
+    csv = S3DirectField(dest='import')
+    media = S3DirectField(dest='import')
+
+    status = models.CharField(max_length=20, choices=STATUSES, default='new')
+    error_log = models.TextField(blank=True)
+
+
