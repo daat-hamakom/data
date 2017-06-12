@@ -335,11 +335,13 @@ def clear_annotation_cache(sender, instance=None, created=False, **kwargs):
 class Import(CreatorPermissionsMixin, SafeDeleteMixin):
     STATUSES = (
         ('new', 'New'),
-        ('uploading', 'uploading'),
-        ('uploaded', 'uploaded'),
         ('testing', 'Testing'),
         ('invalid', 'Invalid'),
         ('valid', 'Valid'),
+        ('uploading', 'Uploading'),
+        ('uploaded', 'Uploaded'),
+        ('migrating', 'Migrating'),
+        ('migrated', 'Migrated'),
     )
 
     project = models.CharField(max_length=160, verbose_name='Temp Project Name')

@@ -68,12 +68,12 @@ def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
 
 
 @shared_task
-def import_events(payload):
+def validate_import(payload):
     import_object = Import.objects.get(pk=payload['id'])
     import_object.status = 'testing'
     import_object.save()
 
-    # todo - get zip
+    # get zip
     zip_file = requests.get(import_object.media).content
     zip_object = ZipFile(io.BytesIO(zip_file))
     zip_list = [info.filename for info in zip_object.infolist()]
@@ -115,17 +115,49 @@ def import_events(payload):
         import_object.status = 'valid'
         import_object.save()
 
-    s3conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-    bucket = s3conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-
 
 @receiver(post_save, sender=Import)
 def test_import(sender, instance=None, created=False, **kwargs):
-    if created:
+    if created or instance.status == 'invalid':
         print('check errors with celery, and update instance')
-        import_events.apply_async(countdown=10,
-                                  kwargs={'payload': {'id': instance.id}},
-                                  retry_policy={'max_retries': 3, 'interval_step': 30})
+        validate_import.apply_async(countdown=10,
+                                    kwargs={'payload': {'id': instance.id}},
+                                    retry_policy={'max_retries': 3, 'interval_step': 30})
+
+
+@shared_task
+def execute_import(payload):
+    import_object = Import.objects.get(pk=payload['id'])
+    import_object.status = 'uploading'
+    import_object.save()
+
+    # get zip
+    zip_file = requests.get(import_object.media).content
+    zip_object = ZipFile(io.BytesIO(zip_file))
+    zip_list = [info.filename for info in zip_object.infolist()]
+
+    csv_file = requests.get(import_object.csv).content.decode('utf-8')
+    reader_list = csv.DictReader(io.StringIO(csv_file))
+
+    #  todo - create new project
+
+    for index, row in enumerate(reader_list):
+        #  todo - create events
+        pass
+
+
+@shared_task
+def migrate_import(payload):
+    import_object = Import.objects.get(pk=payload['id'])
+    import_object.status = 'migrating'
+    import_object.save()
+
+
+@shared_task
+def delete_import(payload):
+    import_object = Import.objects.get(pk=payload['id'])
+    import_object.status = 'testing'
+    import_object.save()
 
 
 def validate_event(title, place_viaf, time):
@@ -166,13 +198,13 @@ def validate_extra(row, zip_list):
     errors = []
     # check person in db if exists
     person1_viaf = row.get('Person 1 VIAF', None)
-    if person1_viaf:
+    if person1_viaf and not row.get('Skip Person 1', None):
         person_count = Person.objects.filter(**extract_filter(person1_viaf)).count()
         if person_count != 1:
             errors.append('person 1 not in db')
 
     person2_viaf = row.get('Person 2 VIAF', None)
-    if person2_viaf:
+    if person2_viaf and not row.get('Skip Person 2', None):
         person_count = Person.objects.filter(**extract_filter(person2_viaf)).count()
         if person_count != 1:
             errors.append('person 2 not in db')
