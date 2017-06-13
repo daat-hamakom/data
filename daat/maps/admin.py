@@ -234,7 +234,7 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
             if obj.status in ['migrating', 'migrated']:
                 return 'target_project', 'project', 'csv', 'media', 'status', 'error_log',
 
-            if obj.status in ['valid', 'uploading', 'uploaded']:
+            if obj.status in ['uploading', 'uploaded']:
                 return 'project', 'csv', 'media', 'status', 'error_log',
 
             return 'csv', 'media', 'status', 'error_log',

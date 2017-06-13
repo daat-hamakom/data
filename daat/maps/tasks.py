@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.apps import apps
 
 import re
+import datetime
 import io
 import csv
 import requests
@@ -140,7 +141,6 @@ def execute_import(payload):
     # get zip
     zip_file = requests.get(import_object.media).content
     zip_object = ZipFile(io.BytesIO(zip_file))
-    zip_list = [info.filename for info in zip_object.infolist()]
 
     csv_file = requests.get(import_object.csv).content.decode('utf-8')
     reader_list = csv.DictReader(io.StringIO(csv_file))
@@ -154,8 +154,11 @@ def execute_import(payload):
 
     for row in reader_list:
         #  todo - create media
-        media1 = Media()
-        media2 = Media()
+        media1 = import_media(row.get('filename1', None), row.get('image-title1', None), row.get('image-source1', None),
+                              import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
+
+        media2 = import_media(row.get('filename2', None), row.get('image-title2', None), row.get('image-source2', None),
+                              import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
 
         #  collect people for later adding to events
         person1_viaf = row.get('Person 1 VIAF', None)
@@ -205,6 +208,12 @@ def execute_import(payload):
             if person2:
                 event.people.add(person2)
 
+            if media1:
+                event.media.add(media1)
+
+            if media2:
+                event.media.add(media2)
+
         #  create event
         if not row.get('Ref. Skip Event', None):
             event_dict = dict()
@@ -239,6 +248,12 @@ def execute_import(payload):
 
             if person2:
                 ref_event.people.add(person2)
+
+            if media1:
+                event.media.add(media1)
+
+            if media2:
+                event.media.add(media2)
 
         if event and ref_event:
             #  todo - create annotation
@@ -371,3 +386,31 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
         description_parts.append(desc3_sub + ': ' + desc3)
 
     return '\n'.join(description_parts)
+
+
+def import_media(filename, title, source, copyrights, copyright_source, zip_object, creator):
+    if not filename:
+        return None
+
+    s3conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    bucket = s3conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+
+    filename_content = zip_object.read(filename + '.jpg')
+
+    k = Key(bucket)
+    ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    k.key = 'media/{}-{}.jpg'.format(filename, ts)
+    k.set_contents_from_string(filename_content)
+    k.make_public()
+    url = k.generate_url(expires_in=0, query_auth=False)
+
+    media_dict = dict(file=url, creator=creator, title=title, source=source)
+    if copyrights:
+        media_dict["copyrights"] = copyrights
+
+    if copyrights:
+        media_dict["source_url"] = copyright_source
+
+    media = Media(**media_dict)
+    media.save()
+    return media

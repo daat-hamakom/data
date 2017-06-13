@@ -2,6 +2,7 @@ from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -350,10 +351,10 @@ class Import(CreatorPermissionsMixin, SafeDeleteMixin):
     description2_subtitle = models.CharField(max_length=160, blank=True)
     description3_subtitle = models.CharField(max_length=160, blank=True)
     copyrights = models.CharField(max_length=160, blank=True)
-    copyrights_source_url = models.CharField(max_length=160, blank=True)
+    copyrights_source_url = models.CharField(max_length=160, blank=True, validators=[URLValidator()])
 
-    csv = S3DirectField(dest='import')
-    media = S3DirectField(dest='import')
+    csv = S3DirectField(dest='import-csv')
+    media = S3DirectField(dest='import-zip')
 
     status = models.CharField(max_length=20, choices=STATUSES, default='new')
     error_log = models.TextField(blank=True)
