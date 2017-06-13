@@ -1,5 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.apps import apps
 
 import re
 import io
@@ -14,7 +15,7 @@ from PIL.ImageOps import fit
 from celery import shared_task
 
 from django.conf import settings
-from .models import Import, Media, Place, Person
+from .models import Import, Media, Place, Person, Event, Annotation, Project
 
 
 def gen_image_thumbnails(media):
@@ -87,10 +88,10 @@ def validate_import(payload):
     for index, row in enumerate(reader_list):
         row_index = index + 2
         if not row.get('Skip Event', None):
-            errors = validate_event(row.get('Title', None), row.get('Place VIAF', None), row.get('Front Time', None))
+            errors = validate_event(row.get('Title', None), row.get('Place VIAF', None), row.get('Time', None))
 
-        if not row.get('Skip Ref. Event', None):
-            ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Production Ref. Time', None))
+        if not row.get('Ref. Skip Event', None):
+            ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Ref. Time', None))
 
         extra_errors = validate_extra(row, zip_list)
 
@@ -118,7 +119,7 @@ def validate_import(payload):
 
 @receiver(post_save, sender=Import)
 def test_import(sender, instance=None, created=False, **kwargs):
-    if created or instance.status == 'invalid':
+    if created:
         print('check errors with celery, and update instance')
         validate_import.apply_async(countdown=10,
                                     kwargs={'payload': {'id': instance.id}},
@@ -131,6 +132,11 @@ def execute_import(payload):
     import_object.status = 'uploading'
     import_object.save()
 
+    # get user
+    app_label, model_name = settings.AUTH_USER_MODEL.split('.')
+    user_model = apps.get_model(app_label=app_label, model_name=model_name)
+    creator = user_model.objects.get(pk=payload['user_id'])
+
     # get zip
     zip_file = requests.get(import_object.media).content
     zip_object = ZipFile(io.BytesIO(zip_file))
@@ -140,10 +146,90 @@ def execute_import(payload):
     reader_list = csv.DictReader(io.StringIO(csv_file))
 
     #  todo - create new project
+    try:
+        project = Project.objects.get(title=import_object.project)
+    except Project.DoesNotExist:
+        project = Project(title=import_object.project, creator=creator)
+        project.save()
 
-    for index, row in enumerate(reader_list):
-        #  todo - create events
-        pass
+    for row in reader_list:
+        #  todo - create media
+        media1 = Media()
+        media2 = Media()
+
+        #  todo - create person
+        person1 = Person()
+        person2 = Person()
+
+        #  create event
+        if not row.get('Skip Event', None):
+            event_dict = dict()
+            event_dict['creator'] = creator
+            event_dict['project'] = project
+            event_dict['title'] = row.get('Title', None)
+            event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
+                                                           import_object.description3_subtitle, row.get('Description 1', None),
+                                                           row.get('Description 2', None), row.get('Description 3', None))
+
+            event_dict['place'] = Place.objects.get(**extract_filter(row.get('Place VIAF', None)))
+
+            #  parse if
+            time = row.get('Time', None)
+            event_dict['circa_date'] = 'ca.' in time
+            time = time.replace('ca. ', time)
+            match = re.search(r"(\d{4}) - (\d{4})", time)
+
+            if match:
+                event_dict['start_date'] = match.group(1)
+                event_dict['end_date'] = match.group(2)
+            else:
+                match = re.search(r"(\d{4})", time)
+                event_dict['start_date'] = match.group(1)
+
+            #  todo - link media and persons
+            event = Event(**event_dict)
+            event.save()
+
+        #  create event
+        if not row.get('Ref. Skip Event', None):
+            event_dict = dict()
+            event_dict['creator'] = creator
+            event_dict['project'] = project
+            event_dict['title'] = row.get('Ref. Title', None)
+            event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
+                                                           import_object.description3_subtitle, row.get('Description 1', None),
+                                                           row.get('Description 2', None), row.get('Description 3', None))
+
+            event_dict['place'] = Place.objects.get(**extract_filter(row.get('Ref. Place VIAF', None)))
+
+            #  parse if
+            time = row.get('Ref. Time', None)
+            event_dict['circa_date'] = 'ca.' in time
+            time = time.replace('ca. ', time)
+            match = re.search(r"(\d{4}) - (\d{4})", time)
+
+            if match:
+                event_dict['start_date'] = match.group(1)
+                event_dict['end_date'] = match.group(2)
+            else:
+                match = re.search(r"(\d{4})", time)
+                event_dict['start_date'] = match.group(1)
+
+            #  todo - link media and persons
+            ref_event = Event(**event_dict)
+            ref_event.save()
+
+        if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None) :
+            #  todo - create annotation
+            annotation = Annotation(type='group', creator=creator)
+            annotation.save()
+
+            annotation.events.add(event)
+            annotation.events.add(ref_event)
+            annotation.save()
+
+    import_object.status = 'uploaded'
+    import_object.save()
 
 
 @shared_task
@@ -234,3 +320,18 @@ def extract_filter(str):
         return {"id": index}
     else:
         return {"viaf_id": str}
+
+
+def create_description(desc1_sub, desc2_sub, desc3_sub,
+                       desc1, desc2, desc3):
+    description_parts = []
+    if desc1 and desc1_sub:
+        description_parts.append(desc1_sub + ': ' + desc1)
+
+    if desc2 and desc2_sub:
+        description_parts.append(desc2_sub + ': ' + desc2)
+
+    if desc3 and desc3_sub:
+        description_parts.append(desc3_sub + ': ' + desc3)
+
+    return '\n'.join(description_parts)

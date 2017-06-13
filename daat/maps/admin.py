@@ -269,7 +269,7 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
                 pass
                 # return
             return execute_import.apply_async(countdown=10,
-                                              kwargs={'payload': {'id': obj.id}},
+                                              kwargs={'payload': {'id': obj.id, 'user_id': request.user.id}},
                                               retry_policy={'max_retries': 3, 'interval_step': 30})
 
         if '_migrate' in request.POST:
@@ -277,7 +277,7 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
                 pass
                 # return
             return migrate_import.apply_async(countdown=10,
-                                              kwargs={'payload': {'id': obj.id}},
+                                              kwargs={'payload': {'id': obj.id, 'user_id': request.user.id}},
                                               retry_policy={'max_retries': 3, 'interval_step': 30})
 
         super(ImportAdmin, self).save_model(request, obj, form, change)
