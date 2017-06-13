@@ -231,7 +231,10 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # Editing
-            if obj.status == 'valid':
+            if obj.status in ['migrating', 'migrated']:
+                return 'target_project', 'project', 'csv', 'media', 'status', 'error_log',
+
+            if obj.status in ['valid', 'uploading', 'uploaded']:
                 return 'project', 'csv', 'media', 'status', 'error_log',
 
             return 'csv', 'media', 'status', 'error_log',

@@ -259,11 +259,26 @@ def migrate_import(payload):
     import_object.status = 'migrating'
     import_object.save()
 
+    temp_project = Project.objects.get(title=import_object.project)
+
+    events = Event.objects.filter(project=temp_project)
+    for event in events:
+        event.project = import_object.target_project
+        event.save()
+
+    temp_project.delete()
+
+    import_object.status = 'migrated'
+    import_object.save()
+
 
 @shared_task
 def delete_import(payload):
     import_object = Import.objects.get(pk=payload['id'])
-    import_object.status = 'testing'
+    import_object.status = 'deleting'
+    import_object.save()
+
+    import_object.status = 'deleted'
     import_object.save()
 
 
