@@ -157,9 +157,18 @@ def execute_import(payload):
         media1 = Media()
         media2 = Media()
 
-        #  todo - create person
-        person1 = Person()
-        person2 = Person()
+        #  collect people for later adding to events
+        person1_viaf = row.get('Person 1 VIAF', None)
+        if person1_viaf and not row.get('Skip Person 1', None):
+            person1 = Person.objects.get(**extract_filter(person1_viaf))
+        else:
+            person1 = None
+
+        person2_viaf = row.get('Person 2 VIAF', None)
+        if person2_viaf and not row.get('Skip Person 2', None):
+            person2 = Person.objects.get(**extract_filter(person2_viaf))
+        else:
+            person2 = None
 
         #  create event
         if not row.get('Skip Event', None):
@@ -190,6 +199,12 @@ def execute_import(payload):
             event = Event(**event_dict)
             event.save()
 
+            if person1:
+                event.people.add(person1)
+
+            if person2:
+                event.people.add(person2)
+
         #  create event
         if not row.get('Ref. Skip Event', None):
             event_dict = dict()
@@ -219,7 +234,13 @@ def execute_import(payload):
             ref_event = Event(**event_dict)
             ref_event.save()
 
-        if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None) :
+            if person1:
+                ref_event.people.add(person1)
+
+            if person2:
+                ref_event.people.add(person2)
+
+        if event and ref_event:
             #  todo - create annotation
             annotation = Annotation(type='group', creator=creator)
             annotation.save()
