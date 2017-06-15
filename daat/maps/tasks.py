@@ -173,6 +173,8 @@ def execute_import(payload):
         else:
             person2 = None
 
+        tags = row.get('Tags', None)
+
         #  create event
         if not row.get('Skip Event', None):
             event_dict = dict()
@@ -184,6 +186,7 @@ def execute_import(payload):
                                                            row.get('Description 2', None), row.get('Description 3', None))
 
             event_dict['place'] = Place.objects.get(**extract_filter(row.get('Place VIAF', None)))
+            event_dict['tags'] = tags.split()
 
             #  parse if
             time = row.get('Time', None)
@@ -225,6 +228,7 @@ def execute_import(payload):
                                                            row.get('Description 2', None), row.get('Description 3', None))
 
             event_dict['place'] = Place.objects.get(**extract_filter(row.get('Ref. Place VIAF', None)))
+            event_dict['tags'] = tags.split()
 
             #  parse if
             time = row.get('Ref. Time', None)
@@ -257,7 +261,7 @@ def execute_import(payload):
 
         if event and ref_event:
             #  todo - create annotation
-            annotation = Annotation(type='group', creator=creator)
+            annotation = Annotation(type='reference', creator=creator)
             annotation.save()
 
             annotation.events.add(event)
@@ -353,14 +357,22 @@ def validate_extra(row, zip_list):
             errors.append('file1 not in zip')
         elif not row.get('image-title1', None):
             errors.append('file 1 missing title')
+        else:
+            title = row.get('image-title1', None)
+            if Media.objects.filter(title=title).count() > 0:
+                errors.append('file 1 title not unique')
 
     filename2 = row.get('filename2', None)
     if filename2:
         filename2 += '.jpg'
         if filename2 not in zip_list:
-            errors.append('file1 not in zip')
+            errors.append('file2 not in zip')
         elif not row.get('image-title2', None):
-            errors.append('file 1 missing title')
+            errors.append('file 2 missing title')
+        else:
+            title = row.get('image-title2', None)
+            if Media.objects.filter(title=title).count() > 0:
+                errors.append('file 2 title not unique')
 
     return errors
 
@@ -376,14 +388,23 @@ def extract_filter(str):
 def create_description(desc1_sub, desc2_sub, desc3_sub,
                        desc1, desc2, desc3):
     description_parts = []
-    if desc1 and desc1_sub:
-        description_parts.append(desc1_sub + ': ' + desc1)
+    if desc1:
+        if desc1_sub:
+            description_parts.append(desc1_sub + ': ' + desc1)
+        else:
+            description_parts.append(desc1)
 
-    if desc2 and desc2_sub:
-        description_parts.append(desc2_sub + ': ' + desc2)
+    if desc2:
+        if desc2_sub:
+            description_parts.append(desc2_sub + ': ' + desc2)
+        else:
+            description_parts.append(desc2)
 
-    if desc3 and desc3_sub:
-        description_parts.append(desc3_sub + ': ' + desc3)
+    if desc3:
+        if desc2_sub:
+            description_parts.append(desc3_sub + ': ' + desc3)
+        else:
+            description_parts.append(desc3)
 
     return '\n'.join(description_parts)
 
