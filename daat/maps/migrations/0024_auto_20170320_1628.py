@@ -3,9 +3,10 @@
 from __future__ import unicode_literals
 
 import ckeditor.fields
-import daat.maps.models
-import daat.maps.utils
 from django.db import migrations, models
+
+import daat.maps.models
+import daat.utils
 
 
 class Migration(migrations.Migration):
@@ -38,6 +39,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='start_date',
-            field=daat.maps.models.PartialDateCharField(blank=True, help_text='Date in YYYY-MM-DD format, use 00 to denote month/day ranges', max_length=10, validators=[daat.maps.utils.partial_date_validator]),
+            field=daat.maps.models.PartialDateCharField(blank=True, help_text='Date in YYYY-MM-DD format, use 00 to denote month/day ranges', max_length=10, validators=[
+                daat.utils.partial_date_validator]),
         ),
     ]

@@ -1,18 +1,17 @@
 from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.cache import cache
-
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
 
-from .utils import partial_date_validator
+from daat.utils import partial_date_validator
 
 EDITING_MODE = (
         ('Edited', 'Edited'),

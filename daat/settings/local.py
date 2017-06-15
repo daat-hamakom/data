@@ -1,6 +1,6 @@
 from .base import *
 from os import environ
-import datetime
+from ..utils import create_filename
 
 ENV = 'local'
 
@@ -34,13 +34,6 @@ AWS_SECRET_ACCESS_KEY = environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
 S3DIRECT_REGION = 'eu-west-1'
 
-
-def create_filename(filename):
-    name = filename.split('.')[0]
-    ext = filename.split('.')[-1]
-    ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = '%s-%s.%s' % (name, ts, ext)
-    return os.path.join('import', filename)
 
 S3DIRECT_DESTINATIONS = {
     'import-zip': (create_filename, lambda u: u.is_authenticated(), ['application/zip', 'application/octet-stream']),
