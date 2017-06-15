@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from .base import *
 
-ENV = 'prod'
+ENV = 'stag'
 
 ALLOWED_HOSTS = [
     'daat-hamakom-data-staging.herokuapp.com'

@@ -8,6 +8,7 @@ from django.db import models
 from django_select2.forms import Select2Widget, Select2TagWidget
 
 from .models import *
+from .tasks import execute_import, migrate_import
 
 
 def make_published(modeladmin, request, queryset):
@@ -222,6 +223,68 @@ class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     }
 
 
+class ImportAdmin(CreatorMixin, admin.ModelAdmin):
+    change_form_template = 'admin/import_form.html'
+
+    list_display = ('id', 'project', 'target_project', 'status')
+    exclude = ('deleted',)
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # Editing
+            if obj.status in ['migrating', 'migrated']:
+                return 'target_project', 'project', 'csv', 'media', 'status', 'error_log',
+
+            if obj.status in ['uploading', 'uploaded']:
+                return 'project', 'csv', 'media', 'status', 'error_log',
+
+            return 'csv', 'media', 'status', 'error_log',
+        return 'status', 'error_log',
+
+    def change_view(self, request, obj_id, extra_context=None):
+
+        extra_context = extra_context or {}
+        extra_context["show_save"] = True
+        extra_context["show_delete_link"] = True
+
+        import_object = Import.objects.get(pk=obj_id)
+        if import_object:
+            if import_object.status == 'migrated':
+                extra_context["show_save"] = False
+
+            if import_object.status == 'valid':
+                extra_context["show_import"] = True
+
+            if import_object.status == 'uploaded':
+                extra_context["show_migrate"] = True
+
+        return super(ImportAdmin, self).change_view(request, obj_id, extra_context=extra_context)
+
+    def add_view(self, request):
+
+        extra_context = dict()
+        extra_context["show_save"] = True
+
+        return super(ImportAdmin, self).add_view(request, extra_context=extra_context)
+
+    def save_model(self, request, obj, form, change):
+        if '_execute' in request.POST:
+            if obj.status != 'valid':
+                pass
+                # return
+            return execute_import.apply_async(countdown=10,
+                                              kwargs={'payload': {'id': obj.id, 'user_id': request.user.id}},
+                                              retry_policy={'max_retries': 3, 'interval_step': 30})
+
+        if '_migrate' in request.POST:
+            if obj.status != 'uploaded':
+                pass
+                # return
+            return migrate_import.apply_async(countdown=10,
+                                              kwargs={'payload': {'id': obj.id, 'user_id': request.user.id}},
+                                              retry_policy={'max_retries': 3, 'interval_step': 30})
+
+        super(ImportAdmin, self).save_model(request, obj, form, change)
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Organization, OrganizationAdmin)
@@ -230,3 +293,4 @@ admin.site.register(Place, PlaceAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Researcher, ResearcherAdmin)
 admin.site.register(Annotation, AnnotationAdmin)
+admin.site.register(Import, ImportAdmin)
