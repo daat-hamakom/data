@@ -192,11 +192,11 @@ def execute_import(payload):
             match = re.search(r"(\d{4}) - (\d{4})", time)
 
             if match:
-                event_dict['start_date'] = match.group(1)
-                event_dict['end_date'] = match.group(2)
+                event_dict['start_date'] = match.group(1) + '-00-00'
+                event_dict['end_date'] = match.group(2) + '-00-00'
             else:
                 match = re.search(r"(\d{4})", time)
-                event_dict['start_date'] = match.group(1)
+                event_dict['start_date'] = match.group(1) + '-00-00'
 
             #  todo - link media and persons
             event = Event(**event_dict)
@@ -233,11 +233,11 @@ def execute_import(payload):
             match = re.search(r"(\d{4}) - (\d{4})", time)
 
             if match:
-                event_dict['start_date'] = match.group(1)
-                event_dict['end_date'] = match.group(2)
+                event_dict['start_date'] = match.group(1) + '-00-00'
+                event_dict['end_date'] = match.group(2) + '-00-00'
             else:
                 match = re.search(r"(\d{4})", time)
-                event_dict['start_date'] = match.group(1)
+                event_dict['start_date'] = match.group(1) + '-00-00'
 
             #  todo - link media and persons
             ref_event = Event(**event_dict)
