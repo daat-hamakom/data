@@ -237,6 +237,9 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
             if obj.status in ['uploading', 'uploaded']:
                 return 'project', 'csv', 'media', 'status', 'error_log',
 
+            if obj.status in ['invalid']:
+                return 'status', 'error_log',
+
             return 'csv', 'media', 'status', 'error_log',
         return 'status', 'error_log',
 
@@ -267,6 +270,10 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
         return super(ImportAdmin, self).add_view(request, extra_context=extra_context)
 
     def save_model(self, request, obj, form, change):
+        if 'csv' in getattr(form, 'changed_data', None) or 'media' in getattr(form, 'changed_data', None):
+            obj.status = 'new'
+            obj.error_log = ''
+
         if '_execute' in request.POST:
             if obj.status != 'valid':
                 pass

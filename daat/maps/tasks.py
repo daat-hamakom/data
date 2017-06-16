@@ -120,7 +120,7 @@ def validate_import(payload):
 
 @receiver(post_save, sender=Import)
 def test_import(sender, instance=None, created=False, **kwargs):
-    if created:
+    if created or instance.status == 'new':
         print('check errors with celery, and update instance')
         validate_import.apply_async(countdown=10,
                                     kwargs={'payload': {'id': instance.id}},
