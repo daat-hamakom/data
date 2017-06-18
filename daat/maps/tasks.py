@@ -1,9 +1,10 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 
 import re
-import datetime
+from datetime import datetime
 import io
 import csv
 import requests
@@ -94,18 +95,12 @@ def validate_import(payload):
         if not row.get('Ref. Skip Event', None):
             ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Ref. Time', None))
 
-        extra_errors = validate_extra(row, zip_list)
+        if not row.get('Skip Event', None) or not row.get('Skip Event', None):
+            extra_errors = validate_extra(row, zip_list)
 
         if len(errors) or len(ref_errors) or len(extra_errors):
-            error = str(row_index) + ' - '
-            if len(errors):
-                error += 'Event Errors: ' + ', '.join(errors) + ' '
-
-            if len(ref_errors):
-                error += 'Ref. Event Errors: ' + ', '.join(ref_errors) + ' '
-
-            if len(extra_errors):
-                error += 'Extras Errors: ' + ', '.join(extra_errors) + ' '
+            all_errors = errors + ref_errors + extra_errors
+            error = str(row_index) + ' - ' + ', '.join(all_errors)
 
             csv_errors.append(error)
 
@@ -120,8 +115,12 @@ def validate_import(payload):
 
 @receiver(post_save, sender=Import)
 def test_import(sender, instance=None, created=False, **kwargs):
+    if instance.deleted:
+        delete_import.apply_async(countdown=10,
+                                  kwargs={'payload': {'id': instance.id}},
+                                  retry_policy={'max_retries': 3, 'interval_step': 30})
+
     if created or instance.status == 'new':
-        print('check errors with celery, and update instance')
         validate_import.apply_async(countdown=10,
                                     kwargs={'payload': {'id': instance.id}},
                                     retry_policy={'max_retries': 3, 'interval_step': 30})
@@ -261,7 +260,7 @@ def execute_import(payload):
 
         if event and ref_event:
             #  todo - create annotation
-            annotation = Annotation(type='reference', creator=creator)
+            annotation = Annotation(type='reference', creator=creator, origin=ref_event)
             annotation.save()
 
             annotation.events.add(event)
@@ -296,6 +295,61 @@ def delete_import(payload):
     import_object = Import.objects.get(pk=payload['id'])
     import_object.status = 'deleting'
     import_object.save()
+
+    temp_project = Project.objects.get(title=import_object.project)
+
+    csv_file = requests.get(import_object.csv).content.decode('utf-8')
+    reader_list = csv.DictReader(io.StringIO(csv_file))
+
+    for row in reader_list:
+        #  todo - create media
+        if row.get('filename1', None):
+            try:
+                media1 = Media.objects.get(title=row.get('image-title1', None))
+
+                #  change name for uniqueness
+                media1.title += datetime.now().strftime("%Y%m%d%H%M%S")
+                media1.save()
+
+                media1.delete()
+            except ObjectDoesNotExist:
+                pass
+
+        if row.get('filename2', None):
+            try:
+                media2 = Media.objects.get(title=row.get('image-title2', None))
+
+                #  change name for uniqueness
+                media2.title += datetime.now().strftime("%Y%m%d%H%M%S")
+                media2.save()
+
+                media2.delete()
+            except ObjectDoesNotExist:
+                pass
+
+        if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
+            try:
+                ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
+                annotation = Annotation.objects.get(origin=ref_event)
+                annotation.delete()
+            except ObjectDoesNotExist:
+                pass
+
+        if not row.get('Ref. Skip Event', None):
+            try:
+                ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
+                ref_event.delete()
+            except ObjectDoesNotExist:
+                pass
+
+        if not row.get('Skip Event', None):
+            try:
+                event = Event.objects.get(project=temp_project, title=row.get('Title', None))
+                event.delete()
+            except ObjectDoesNotExist:
+                pass
+
+    temp_project.delete()
 
     import_object.status = 'deleted'
     import_object.save()
@@ -390,23 +444,23 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
     description_parts = []
     if desc1:
         if desc1_sub:
-            description_parts.append(desc1_sub + ': ' + desc1)
+            description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1)
         else:
             description_parts.append(desc1)
 
     if desc2:
         if desc2_sub:
-            description_parts.append(desc2_sub + ': ' + desc2)
+            description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2)
         else:
             description_parts.append(desc2)
 
     if desc3:
         if desc2_sub:
-            description_parts.append(desc3_sub + ': ' + desc3)
+            description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3)
         else:
             description_parts.append(desc3)
 
-    return '\n'.join(description_parts)
+    return '.\n'.join(description_parts)
 
 
 def import_media(filename, title, source, copyrights, copyright_source, zip_object, creator):
@@ -419,7 +473,7 @@ def import_media(filename, title, source, copyrights, copyright_source, zip_obje
     filename_content = zip_object.read(filename + '.jpg')
 
     k = Key(bucket)
-    ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    ts = datetime.now().strftime("%Y%m%d%H%M%S")
     k.key = 'media/{}-{}.jpg'.format(filename, ts)
     k.set_contents_from_string(filename_content)
     k.make_public()

@@ -342,6 +342,17 @@ class Import(CreatorPermissionsMixin, SafeDeleteMixin):
         ('uploaded', 'Uploaded'),
         ('migrating', 'Migrating'),
         ('migrated', 'Migrated'),
+        ('deleting', 'Deleting'),
+        ('deleted', 'Deleted'),
+    )
+
+    MAP_CONTEXTS = (
+        ('neighbourhood', 'Neighbourhood'),
+        ('city', 'City'),
+        ('province', 'Province'),
+        ('country', 'Country'),
+        ('continent', 'Continent'),
+        ('world', 'World'),
     )
 
     project = models.CharField(max_length=160, verbose_name='Temp Project Name')
@@ -349,6 +360,7 @@ class Import(CreatorPermissionsMixin, SafeDeleteMixin):
     description1_subtitle = models.CharField(max_length=160, blank=True)
     description2_subtitle = models.CharField(max_length=160, blank=True)
     description3_subtitle = models.CharField(max_length=160, blank=True)
+    # map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     copyrights = models.CharField(max_length=160, blank=True)
     copyrights_source_url = models.CharField(max_length=160, blank=True, validators=[URLValidator()])
 
