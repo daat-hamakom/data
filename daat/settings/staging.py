@@ -6,6 +6,7 @@ from ..utils import create_filename
 from .base import *
 
 ENV = 'stag'
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'daat-hamakom-data-staging.herokuapp.com'
