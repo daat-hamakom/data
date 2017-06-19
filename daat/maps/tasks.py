@@ -413,7 +413,7 @@ def validate_extra(row, zip_list):
             errors.append('file 1 missing title')
         else:
             title = row.get('image-title1', None)
-            if Media.objects.filter(title=title).count() > 0:
+            if Media.objects.all_with_deleted().filter(title=title).count() > 0:
                 errors.append('file 1 title not unique')
 
     filename2 = row.get('filename2', None)
@@ -425,7 +425,7 @@ def validate_extra(row, zip_list):
             errors.append('file 2 missing title')
         else:
             title = row.get('image-title2', None)
-            if Media.objects.filter(title=title).count() > 0:
+            if Media.objects.all_with_deleted().filter(title=title).count() > 0:
                 errors.append('file 2 title not unique')
 
     return errors
