@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.postgres',
 
+    'djcelery',
     'ckeditor',
     'corsheaders',
     'django_select2',
