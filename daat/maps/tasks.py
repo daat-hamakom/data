@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
@@ -308,7 +308,7 @@ def delete_import(payload):
                 media1 = Media.objects.get(title=row.get('image-title1', None))
 
                 #  change name for uniqueness
-                media1.title += datetime.now().strftime("%Y%m%d%H%M%S")
+                media1.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
                 media1.save()
 
                 media1.delete()
@@ -320,7 +320,7 @@ def delete_import(payload):
                 media2 = Media.objects.get(title=row.get('image-title2', None))
 
                 #  change name for uniqueness
-                media2.title += datetime.now().strftime("%Y%m%d%H%M%S")
+                media2.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
                 media2.save()
 
                 media2.delete()

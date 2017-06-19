@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -5,7 +7,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
@@ -98,6 +100,12 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
         elif self.url:
             self.type = 'link'
         super().save(*args, **kwargs)
+
+
+@receiver(pre_save, sender=Media)
+def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
+    if instance.deleted:
+        instance.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
 
 
 class Researcher(CreatorPermissionsMixin, SafeDeleteMixin):
