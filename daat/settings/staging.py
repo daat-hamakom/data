@@ -6,7 +6,6 @@ from ..utils import create_filename
 from .base import *
 
 ENV = 'stag'
-DEBUG = True
 
 ALLOWED_HOSTS = [
     'daat-hamakom-data-staging.herokuapp.com'
@@ -42,7 +41,7 @@ INSTALLED_APPS += (
     's3direct',
 )
 
-CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = False
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')

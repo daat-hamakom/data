@@ -41,7 +41,7 @@ INSTALLED_APPS += (
     's3direct',
 )
 
-CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = False
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
