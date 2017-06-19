@@ -2,11 +2,12 @@ amqp==1.4.9
 anyjson==0.3.3
 billiard==3.3.0.23
 boto==2.39.0
-celery==3.1.23
+celery==3.1.25
 contextlib2==0.5.1
 dj-database-url==0.3.0
 Django==1.9.6
 django-appconf==1.0.2
+django-celery==3.2.1
 django-ckeditor==5.0.2
 django-cors-headers==1.1.0
 -e git+https://github.com/yuvadm/django-geoposition@ab2076aa7478030e8c4a53bec69e14e2da6c1f14#egg=django_geoposition
@@ -22,13 +23,14 @@ djangorestframework-csv==1.3.4
 drf-extensions==0.3.1
 gunicorn==19.4.5
 hiredis==0.2.0
-kombu==3.0.35
+kombu==3.0.37
 Pillow==3.2.0
 psycopg2==2.6.1
 pylibmc==1.5.1
-pytz==2016.4
+pytz==2017.2
 raven==5.13.0
 redis==2.10.5
 requests==2.10.0
 six==1.10.0
+vine==1.1.3
 whitenoise==3.0

@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+import djcelery
+djcelery.setup_loader()
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
