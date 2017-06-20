@@ -190,8 +190,8 @@ def execute_import(payload):
             #  parse if
             time = row.get('Time', None)
             event_dict['circa_date'] = 'ca.' in time
-            time = time.replace('ca. ', time)
-            match = re.search(r"(\d{4}) - (\d{4})", time)
+            time = time.replace('ca. ', '')
+            match = re.search(r"^(\d{4})-(\d{4})$", time)
 
             if match:
                 event_dict['start_date'] = match.group(1) + '-00-00'
@@ -233,7 +233,7 @@ def execute_import(payload):
             time = row.get('Ref. Time', None)
             event_dict['circa_date'] = 'ca.' in time
             time = time.replace('ca. ', time)
-            match = re.search(r"(\d{4}) - (\d{4})", time)
+            match = re.search(r"^(\d{4})-(\d{4})$", time)
 
             if match:
                 event_dict['start_date'] = match.group(1) + '-00-00'
@@ -375,7 +375,7 @@ def validate_event(title, place_viaf, time):
     if not time:
         errors.append('time is missing')
     else:
-        regexes = [r"(\d{4})", r"ca. (\d{4})", r"ca. (\d{4}) - (\d{4})", r"(\d{4}) - (\d{4})"]
+        regexes = [r"^(\d{4})$", r"^ca. (\d{4})$", r"^ca. (\d{4})-(\d{4})$", r"^(\d{4})-(\d{4})$"]
         for regex in regexes:
             match = re.search(regex, time)
 
