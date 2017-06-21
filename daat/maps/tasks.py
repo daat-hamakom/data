@@ -401,14 +401,18 @@ def validate_extra(row, zip_list):
     person1_viaf = row.get('Person 1 VIAF', None)
     if person1_viaf and not row.get('Skip Person 1', None):
         person_count = Person.objects.filter(**extract_filter(person1_viaf)).count()
-        if person_count != 1:
+        if person_count < 1:
             errors.append('person 1 not in db')
+        if person_count > 1:
+            errors.append('person 1 not unique')
 
     person2_viaf = row.get('Person 2 VIAF', None)
     if person2_viaf and not row.get('Skip Person 2', None):
         person_count = Person.objects.filter(**extract_filter(person2_viaf)).count()
-        if person_count != 1:
+        if person_count < 1:
             errors.append('person 2 not in db')
+        if person_count > 1:
+            errors.append('person 2 not unique')
 
     filename1 = row.get('filename1', None)
     if filename1:
