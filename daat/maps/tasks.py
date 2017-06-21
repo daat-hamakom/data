@@ -93,7 +93,7 @@ def validate_import(payload):
             errors = validate_event(row.get('Title', None), row.get('Place VIAF', None), row.get('Time', None))
 
         if not row.get('Ref. Skip Event', None):
-            ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Ref. Time', None))
+            ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Ref. Time', None), 'ref ')
 
         if not row.get('Skip Event', None) or not row.get('Skip Event', None):
             extra_errors = validate_extra(row, zip_list)
@@ -190,7 +190,7 @@ def execute_import(payload):
             #  parse if
             time = row.get('Time', None)
             event_dict['circa_date'] = 'ca.' in time
-            time = time.replace('ca. ', '')
+            time = time.replace('ca.', '')
             match = re.search(r"^(\d{4})-(\d{4})$", time)
 
             if match:
@@ -212,6 +212,8 @@ def execute_import(payload):
 
             if media1:
                 event.media.add(media1)
+                event.media_icon = media1
+                event.save()
 
             if media2:
                 event.media.add(media2)
@@ -232,7 +234,7 @@ def execute_import(payload):
             #  parse if
             time = row.get('Ref. Time', None)
             event_dict['circa_date'] = 'ca.' in time
-            time = time.replace('ca. ', time)
+            time = time.replace('ca.', time)
             match = re.search(r"^(\d{4})-(\d{4})$", time)
 
             if match:
@@ -254,6 +256,8 @@ def execute_import(payload):
 
             if media1:
                 event.media.add(media1)
+                event.media_icon = media1
+                event.save()
 
             if media2:
                 event.media.add(media2)
@@ -355,27 +359,29 @@ def delete_import(payload):
     import_object.save()
 
 
-def validate_event(title, place_viaf, time):
+def validate_event(title, place_viaf, time, prefix=''):
     errors = []
     # check if title in csv
     if not title:
-        errors.append('title is missing')
+        errors.append(prefix + 'title is missing')
 
     # check if place in csv
     if not place_viaf:
-        errors.append('place viaf is missing')
-
-    # check if place exists
-    place_count = Place.objects.filter(**extract_filter(place_viaf)).count()
-    if place_count != 1:
-        errors.append('place viaf is not in db')
+        errors.append(prefix + 'place viaf is missing')
+    else:
+        # check if place exists
+        place_count = Place.objects.filter(**extract_filter(place_viaf)).count()
+        if place_count < 1:
+            errors.append(prefix + 'place viaf is not in db')
+        if place_count > 1:
+            errors.append(prefix + 'place viaf not unique')
 
     # check if time in csv
     parsed_time = None
     if not time:
-        errors.append('time is missing')
+        errors.append(prefix + 'time required')
     else:
-        regexes = [r"^(\d{4})$", r"^ca. (\d{4})$", r"^ca. (\d{4})-(\d{4})$", r"^(\d{4})-(\d{4})$"]
+        regexes = [r"^(\d{4})$", r"^ca.(\d{4})$", r"^ca.(\d{4})-(\d{4})$", r"^(\d{4})-(\d{4})$"]
         for regex in regexes:
             match = re.search(regex, time)
 
@@ -384,7 +390,7 @@ def validate_event(title, place_viaf, time):
                 break
 
         if not parsed_time:
-            errors.append('time is not in the right format')
+            errors.append(prefix + 'time is not in the right format')
 
     return errors
 
