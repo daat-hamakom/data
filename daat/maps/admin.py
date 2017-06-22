@@ -248,6 +248,7 @@ class ImportAdmin(CreatorMixin, admin.ModelAdmin):
         extra_context = extra_context or {}
         extra_context["show_save"] = True
         extra_context["show_delete_link"] = True
+        extra_context["show_import"] = True
 
         import_object = Import.objects.get(pk=obj_id)
         if import_object:

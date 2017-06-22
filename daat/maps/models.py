@@ -350,6 +350,7 @@ class Import(CreatorPermissionsMixin, SafeDeleteMixin):
         ('uploaded', 'Uploaded'),
         ('migrating', 'Migrating'),
         ('migrated', 'Migrated'),
+        ('failed', 'Failed'),
         ('deleting', 'Deleting'),
         ('deleted', 'Deleted'),
     )

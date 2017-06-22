@@ -146,130 +146,137 @@ def execute_import(payload):
 
     #  todo - create new project
     try:
-        project = Project.objects.get(title=import_object.project)
-    except Project.DoesNotExist:
-        project = Project(title=import_object.project, creator=creator)
-        project.save()
+        try:
+            project = Project.objects.get(title=import_object.project)
+        except Project.DoesNotExist:
+            project = Project(title=import_object.project, creator=creator)
+            project.save()
 
-    for row in reader_list:
-        #  todo - create media
-        media1 = import_media(row.get('filename1', None), row.get('image-title1', None), row.get('image-source1', None),
-                              import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
+        for row in reader_list:
+            #  todo - create media
+            if not row.get('Ref. Skip Event', None) or not row.get('Skip Event', None):
+                media1 = import_media(row.get('filename1', None), row.get('image-title1', None), row.get('image-source1', None),
+                                      import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
 
-        media2 = import_media(row.get('filename2', None), row.get('image-title2', None), row.get('image-source2', None),
-                              import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
+                media2 = import_media(row.get('filename2', None), row.get('image-title2', None), row.get('image-source2', None),
+                                      import_object.copyrights, import_object.copyrights_source_url, zip_object, creator)
 
-        #  collect people for later adding to events
-        person1_viaf = row.get('Person 1 VIAF', None)
-        if person1_viaf and not row.get('Skip Person 1', None):
-            person1 = Person.objects.get(**extract_filter(person1_viaf))
-        else:
-            person1 = None
+                #  collect people for later adding to events
+                person1_viaf = row.get('Person 1 VIAF', None)
+                if person1_viaf and not row.get('Skip Person 1', None):
+                    person1 = Person.objects.get(**extract_filter(person1_viaf))
+                else:
+                    person1 = None
 
-        person2_viaf = row.get('Person 2 VIAF', None)
-        if person2_viaf and not row.get('Skip Person 2', None):
-            person2 = Person.objects.get(**extract_filter(person2_viaf))
-        else:
-            person2 = None
+                person2_viaf = row.get('Person 2 VIAF', None)
+                if person2_viaf and not row.get('Skip Person 2', None):
+                    person2 = Person.objects.get(**extract_filter(person2_viaf))
+                else:
+                    person2 = None
 
-        tags = row.get('Tags', None)
+                tags = row.get('Tags', None)
 
-        #  create event
-        if not row.get('Skip Event', None):
-            event_dict = dict()
-            event_dict['creator'] = creator
-            event_dict['project'] = project
-            event_dict['title'] = row.get('Title', None)
-            event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
-                                                           import_object.description3_subtitle, row.get('Description 1', None),
-                                                           row.get('Description 2', None), row.get('Description 3', None))
+            #  create event
+            if not row.get('Skip Event', None):
+                event_dict = dict()
+                event_dict['creator'] = creator
+                event_dict['project'] = project
+                event_dict['title'] = row.get('Title', None)
+                event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
+                                                               import_object.description3_subtitle, row.get('Description 1', None),
+                                                               row.get('Description 2', None), row.get('Description 3', None))
 
-            event_dict['place'] = Place.objects.get(**extract_filter(row.get('Place VIAF', None)))
-            event_dict['tags'] = tags.split()
+                event_dict['place'] = Place.objects.get(**extract_filter(row.get('Place VIAF', None)))
+                event_dict['tags'] = tags.split()
 
-            #  parse if
-            time = row.get('Time', None)
-            event_dict['circa_date'] = 'ca.' in time
-            time = time.replace('ca.', '')
-            match = re.search(r"^(\d{4})-(\d{4})$", time)
+                #  parse if
+                time = row.get('Time', None)
+                event_dict['circa_date'] = 'ca.' in time
+                time = time.replace('ca.', '')
+                match = re.search(r"^(\d{4})-(\d{4})$", time)
 
-            if match:
-                event_dict['start_date'] = match.group(1) + '-00-00'
-                event_dict['end_date'] = match.group(2) + '-00-00'
-            else:
-                match = re.search(r"(\d{4})", time)
-                event_dict['start_date'] = match.group(1) + '-00-00'
+                if match:
+                    event_dict['start_date'] = match.group(1) + '-00-00'
+                    event_dict['end_date'] = match.group(2) + '-00-00'
+                else:
+                    match = re.search(r"(\d{4})", time)
+                    event_dict['start_date'] = match.group(1) + '-00-00'
 
-            #  todo - link media and persons
-            event = Event(**event_dict)
-            event.save()
-
-            if person1:
-                event.people.add(person1)
-
-            if person2:
-                event.people.add(person2)
-
-            if media1:
-                event.media.add(media1)
-                event.media_icon = media1
+                #  todo - link media and persons
+                event = Event(**event_dict)
                 event.save()
 
-            if media2:
-                event.media.add(media2)
+                if person1:
+                    event.people.add(person1)
 
-        #  create event
-        if not row.get('Ref. Skip Event', None):
-            event_dict = dict()
-            event_dict['creator'] = creator
-            event_dict['project'] = project
-            event_dict['title'] = row.get('Ref. Title', None)
-            event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
-                                                           import_object.description3_subtitle, row.get('Description 1', None),
-                                                           row.get('Description 2', None), row.get('Description 3', None))
+                if person2:
+                    event.people.add(person2)
 
-            event_dict['place'] = Place.objects.get(**extract_filter(row.get('Ref. Place VIAF', None)))
-            event_dict['tags'] = tags.split()
+                if media1:
+                    event.media.add(media1)
+                    event.media_icon = media1
+                    event.save()
 
-            #  parse if
-            time = row.get('Ref. Time', None)
-            event_dict['circa_date'] = 'ca.' in time
-            time = time.replace('ca.', time)
-            match = re.search(r"^(\d{4})-(\d{4})$", time)
+                if media2:
+                    event.media.add(media2)
 
-            if match:
-                event_dict['start_date'] = match.group(1) + '-00-00'
-                event_dict['end_date'] = match.group(2) + '-00-00'
-            else:
-                match = re.search(r"(\d{4})", time)
-                event_dict['start_date'] = match.group(1) + '-00-00'
+            #  create event
+            if not row.get('Ref. Skip Event', None):
+                event_dict = dict()
+                event_dict['creator'] = creator
+                event_dict['project'] = project
+                event_dict['title'] = row.get('Ref. Title', None)
+                event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
+                                                               import_object.description3_subtitle, row.get('Description 1', None),
+                                                               row.get('Description 2', None), row.get('Description 3', None))
 
-            #  todo - link media and persons
-            ref_event = Event(**event_dict)
-            ref_event.save()
+                event_dict['place'] = Place.objects.get(**extract_filter(row.get('Ref. Place VIAF', None)))
+                event_dict['tags'] = tags.split()
 
-            if person1:
-                ref_event.people.add(person1)
+                #  parse if
+                time = row.get('Ref. Time', None)
+                event_dict['circa_date'] = 'ca.' in time
+                time = time.replace('ca.', time)
+                match = re.search(r"^(\d{4})-(\d{4})$", time)
 
-            if person2:
-                ref_event.people.add(person2)
+                if match:
+                    event_dict['start_date'] = match.group(1) + '-00-00'
+                    event_dict['end_date'] = match.group(2) + '-00-00'
+                else:
+                    match = re.search(r"(\d{4})", time)
+                    event_dict['start_date'] = match.group(1) + '-00-00'
 
-            if media1:
-                event.media.add(media1)
-                event.media_icon = media1
-                event.save()
+                #  todo - link media and persons
+                ref_event = Event(**event_dict)
+                ref_event.save()
 
-            if media2:
-                event.media.add(media2)
+                if person1:
+                    ref_event.people.add(person1)
 
-        if event and ref_event:
-            #  todo - create annotation
-            annotation = Annotation(type='reference', creator=creator, origin=ref_event)
-            annotation.save()
+                if person2:
+                    ref_event.people.add(person2)
 
-            annotation.events.add(event)
-            annotation.events.add(ref_event)
-            annotation.save()
+                if media1:
+                    event.media.add(media1)
+                    event.media_icon = media1
+                    event.save()
+
+                if media2:
+                    event.media.add(media2)
+
+            if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
+                #  todo - create annotation
+                annotation = Annotation(type='reference', creator=creator, origin=ref_event)
+                annotation.save()
+
+                annotation.events.add(event)
+                annotation.events.add(ref_event)
+                annotation.save()
+    except Exception as e:
+        import_object.error_log = str(e)
+        import_object.status = 'failed'
+        import_object.save()
+        return
 
     import_object.status = 'uploaded'
     import_object.save()
@@ -281,14 +288,20 @@ def migrate_import(payload):
     import_object.status = 'migrating'
     import_object.save()
 
-    temp_project = Project.objects.get(title=import_object.project)
+    try:
+        temp_project = Project.objects.get(title=import_object.project)
 
-    events = Event.objects.filter(project=temp_project)
-    for event in events:
-        event.project = import_object.target_project
-        event.save()
+        events = Event.objects.filter(project=temp_project)
+        for event in events:
+            event.project = import_object.target_project
+            event.save()
 
-    temp_project.delete()
+        temp_project.delete()
+    except Exception as e:
+        import_object.error_log = str(e)
+        import_object.status = 'failed'
+        import_object.save()
+        return
 
     import_object.status = 'migrated'
     import_object.save()
@@ -300,60 +313,66 @@ def delete_import(payload):
     import_object.status = 'deleting'
     import_object.save()
 
-    temp_project = Project.objects.get(title=import_object.project)
+    try:
+        temp_project = Project.objects.get(title=import_object.project)
 
-    csv_file = requests.get(import_object.csv).content.decode('utf-8')
-    reader_list = csv.DictReader(io.StringIO(csv_file))
+        csv_file = requests.get(import_object.csv).content.decode('utf-8')
+        reader_list = csv.DictReader(io.StringIO(csv_file))
 
-    for row in reader_list:
-        #  todo - create media
-        if row.get('filename1', None):
-            try:
-                media1 = Media.objects.get(title=row.get('image-title1', None))
+        for row in reader_list:
+            #  todo - create media
+            if row.get('filename1', None):
+                try:
+                    media1 = Media.objects.get(title=row.get('image-title1', None))
 
-                #  change name for uniqueness
-                media1.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
-                media1.save()
+                    #  change name for uniqueness
+                    media1.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
+                    media1.save()
 
-                media1.delete()
-            except ObjectDoesNotExist:
-                pass
+                    media1.delete()
+                except ObjectDoesNotExist:
+                    pass
 
-        if row.get('filename2', None):
-            try:
-                media2 = Media.objects.get(title=row.get('image-title2', None))
+            if row.get('filename2', None):
+                try:
+                    media2 = Media.objects.get(title=row.get('image-title2', None))
 
-                #  change name for uniqueness
-                media2.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
-                media2.save()
+                    #  change name for uniqueness
+                    media2.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
+                    media2.save()
 
-                media2.delete()
-            except ObjectDoesNotExist:
-                pass
+                    media2.delete()
+                except ObjectDoesNotExist:
+                    pass
 
-        if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
-            try:
-                ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
-                annotation = Annotation.objects.get(origin=ref_event)
-                annotation.delete()
-            except ObjectDoesNotExist:
-                pass
+            if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
+                try:
+                    ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
+                    annotation = Annotation.objects.get(origin=ref_event)
+                    annotation.delete()
+                except ObjectDoesNotExist:
+                    pass
 
-        if not row.get('Ref. Skip Event', None):
-            try:
-                ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
-                ref_event.delete()
-            except ObjectDoesNotExist:
-                pass
+            if not row.get('Ref. Skip Event', None):
+                try:
+                    ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
+                    ref_event.delete()
+                except ObjectDoesNotExist:
+                    pass
 
-        if not row.get('Skip Event', None):
-            try:
-                event = Event.objects.get(project=temp_project, title=row.get('Title', None))
-                event.delete()
-            except ObjectDoesNotExist:
-                pass
+            if not row.get('Skip Event', None):
+                try:
+                    event = Event.objects.get(project=temp_project, title=row.get('Title', None))
+                    event.delete()
+                except ObjectDoesNotExist:
+                    pass
 
-    temp_project.delete()
+        temp_project.delete()
+    except Exception as e:
+        import_object.error_log = str(e)
+        import_object.status = 'failed'
+        import_object.save()
+        return
 
     import_object.status = 'deleted'
     import_object.save()
