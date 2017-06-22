@@ -87,6 +87,7 @@ def validate_import(payload):
     csv_errors = []
     errors = []
     ref_errors = []
+    media_titles = []
     for index, row in enumerate(reader_list):
         row_index = index + 2
         if not row.get('Skip Event', None):
@@ -95,8 +96,21 @@ def validate_import(payload):
         if not row.get('Ref. Skip Event', None):
             ref_errors = validate_event(row.get('Ref. Title', None), row.get('Ref. Place VIAF', None), row.get('Ref. Time', None), 'ref ')
 
-        if not row.get('Skip Event', None) or not row.get('Skip Event', None):
+        if not row.get('Skip Event', None) or not row.get('Ref. Skip Event', None):
             extra_errors = validate_extra(row, zip_list)
+            if row.get('filename1', None):
+                title1 = row.get('image-title1', None)
+                if title1 not in media_titles:
+                    media_titles.append(title1)
+                else:
+                    extra_errors.append('title1 ' + title1 + ' already mentioned in csv')
+
+            if row.get('filename2', None):
+                title2 = row.get('image-title2', None)
+                if title2 not in media_titles:
+                    media_titles.append(title2)
+                else:
+                    extra_errors.append('title2 ' + title2 + ' already mentioned in csv')
 
         if len(errors) or len(ref_errors) or len(extra_errors):
             all_errors = errors + ref_errors + extra_errors
