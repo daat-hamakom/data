@@ -195,6 +195,7 @@ def execute_import(payload):
                 event_dict = dict()
                 event_dict['creator'] = creator
                 event_dict['project'] = project
+                event_dict['map_context'] = import_object.map_context
                 event_dict['title'] = row.get('Title', None)
                 event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
                                                                import_object.description3_subtitle, row.get('Description 1', None),
@@ -239,6 +240,7 @@ def execute_import(payload):
                 event_dict = dict()
                 event_dict['creator'] = creator
                 event_dict['project'] = project
+                event_dict['map_context'] = import_object.map_context
                 event_dict['title'] = row.get('Ref. Title', None)
                 event_dict['description'] = create_description(import_object.description1_subtitle, import_object.description2_subtitle,
                                                                import_object.description3_subtitle, row.get('Description 1', None),
@@ -271,12 +273,12 @@ def execute_import(payload):
                     ref_event.people.add(person2)
 
                 if media1:
-                    event.media.add(media1)
-                    event.media_icon = media1
-                    event.save()
+                    ref_event.media.add(media1)
+                    ref_event.media_icon = media1
+                    ref_event.save()
 
                 if media2:
-                    event.media.add(media2)
+                    ref_event.media.add(media2)
 
             if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
                 #  todo - create annotation
@@ -487,19 +489,19 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
     description_parts = []
     if desc1:
         if desc1_sub:
-            description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1)
+            description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1 + '.<br/>')
         else:
             description_parts.append(desc1)
 
     if desc2:
         if desc2_sub:
-            description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2)
+            description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2 + '.<br/>')
         else:
             description_parts.append(desc2)
 
     if desc3:
         if desc2_sub:
-            description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3)
+            description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3 + '.<br/>')
         else:
             description_parts.append(desc3)
 

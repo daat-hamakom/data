@@ -369,7 +369,7 @@ class Import(CreatorPermissionsMixin, SafeDeleteMixin):
     description1_subtitle = models.CharField(max_length=160, blank=True)
     description2_subtitle = models.CharField(max_length=160, blank=True)
     description3_subtitle = models.CharField(max_length=160, blank=True)
-    # map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
+    map_context = models.CharField(max_length=20, choices=MAP_CONTEXTS, blank=True)
     copyrights = models.CharField(max_length=160, blank=True)
     copyrights_source_url = models.CharField(max_length=160, blank=True, validators=[URLValidator()])
 
