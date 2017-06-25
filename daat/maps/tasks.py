@@ -327,6 +327,7 @@ def migrate_import(payload):
 def delete_import(payload):
     import_object = Import.objects.get(pk=payload['id'])
     import_object.status = 'deleting'
+    import_object.error_log = ''
     import_object.save()
 
     try:
