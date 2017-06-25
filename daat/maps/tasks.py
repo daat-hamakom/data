@@ -363,23 +363,26 @@ def delete_import(payload):
 
             if not row.get('Ref. Skip Event', None) and not row.get('Skip Event', None):
                 try:
-                    ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
-                    annotation = Annotation.objects.get(origin=ref_event)
+                    ref_events = Event.objects.filter(project=temp_project, title=row.get('Ref. Title', None))
+                    if ref_events.count() == 0:
+                        pass
+
+                    annotation = Annotation.objects.filter(origin=ref_events[0])
                     annotation.delete()
                 except ObjectDoesNotExist:
                     pass
 
             if not row.get('Ref. Skip Event', None):
                 try:
-                    ref_event = Event.objects.get(project=temp_project, title=row.get('Ref. Title', None))
-                    ref_event.delete()
+                    ref_events = Event.objects.filter(project=temp_project, title=row.get('Ref. Title', None))
+                    ref_events.delete()
                 except ObjectDoesNotExist:
                     pass
 
             if not row.get('Skip Event', None):
                 try:
-                    event = Event.objects.get(project=temp_project, title=row.get('Title', None))
-                    event.delete()
+                    events = Event.objects.filter(project=temp_project, title=row.get('Title', None))
+                    events.delete()
                 except ObjectDoesNotExist:
                     pass
 
