@@ -495,19 +495,19 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
         if desc1_sub:
             description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1 + '.<br/>')
         else:
-            description_parts.append(desc1)
+            description_parts.append(desc1 + '.<br/>')
 
     if desc2:
         if desc2_sub:
             description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2 + '.<br/>')
         else:
-            description_parts.append(desc2)
+            description_parts.append(desc2 + '.<br/>')
 
     if desc3:
-        if desc2_sub:
+        if desc3_sub:
             description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3 + '.<br/>')
         else:
-            description_parts.append(desc3)
+            description_parts.append(desc3 + '.<br/>')
 
     return '.\n'.join(description_parts)
 
