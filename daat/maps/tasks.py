@@ -509,7 +509,7 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
         else:
             description_parts.append(desc3)
 
-    return '.\n'.join(description_parts)
+    return '.<br/>'.join(description_parts)
 
 
 def import_media(filename, title, source, copyrights, copyright_source, zip_object, creator):
