@@ -505,7 +505,7 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
 
     if desc3:
         if desc3_sub:
-            description_parts.append('<b>' + desc3_sub + '</b>: ' + '.')
+            description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3 + '.')
         else:
             description_parts.append(desc3 + '.')
 
