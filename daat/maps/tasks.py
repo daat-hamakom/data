@@ -493,23 +493,23 @@ def create_description(desc1_sub, desc2_sub, desc3_sub,
     description_parts = []
     if desc1:
         if desc1_sub:
-            description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1)
+            description_parts.append('<b>' + desc1_sub + '</b>: ' + desc1 + '.')
         else:
-            description_parts.append(desc1)
+            description_parts.append(desc1 + '.')
 
     if desc2:
         if desc2_sub:
-            description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2)
+            description_parts.append('<b>' + desc2_sub + '</b>: ' + desc2 + '.')
         else:
-            description_parts.append(desc2)
+            description_parts.append(desc2 + '.')
 
     if desc3:
         if desc3_sub:
-            description_parts.append('<b>' + desc3_sub + '</b>: ' + desc3)
+            description_parts.append('<b>' + desc3_sub + '</b>: ' + '.')
         else:
-            description_parts.append(desc3)
+            description_parts.append(desc3 + '.')
 
-    return '.<br/>'.join(description_parts)
+    return '<br/>'.join(description_parts)
 
 
 def import_media(filename, title, source, copyrights, copyright_source, zip_object, creator):
