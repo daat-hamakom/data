@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
+from django.db.models import Count
 
 from rest_framework import permissions
 from rest_framework import status
@@ -44,7 +45,7 @@ class EventViewSet(CacheViewSet):
 
 
 class ProjectViewSet(CacheViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = ProjectSerializer
 
 
@@ -54,17 +55,17 @@ class AnnotationViewSet(CacheViewSet):
 
 
 class PlaceViewSet(CacheViewSet):
-    queryset = Place.objects.all()
+    queryset = Place.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = PlaceSerializer
 
 
 class PersonViewSet(CacheViewSet):
-    queryset = Person.objects.all().order_by('last_name')
+    queryset = Person.objects.annotate(num_events=Count('events')).exclude(num_events=0).order_by('last_name')
     serializer_class = FullPersonSerializer
 
 
 class OrganizationViewSet(CacheViewSet):
-    queryset = Organization.objects.all()
+    queryset = Organization.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = FullOrganizationSerializer
 
 
