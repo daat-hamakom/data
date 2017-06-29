@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from ckeditor.fields import RichTextField
@@ -284,6 +285,18 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        new_tags = []
+        for tag in self.tags:
+            new_tag = tag.lower()
+            new_tag = re.sub(' +', '_', new_tag)
+
+            if new_tag not in new_tags:
+                new_tags.append(new_tag)
+        self.tags = new_tags
+
+        super(Event, self).save(*args, **kwargs)
 
     def clean(self):
         if self.end_date:
