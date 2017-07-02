@@ -66,7 +66,7 @@ def gen_image_thumbnails(media):
 
 @receiver(post_save, sender=Media)
 def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
-    if created and instance.type == 'image':
+    if instance.type == 'image' and (created or instance.__gen_thumbnails__):
         gen_image_thumbnails(instance)
 
 

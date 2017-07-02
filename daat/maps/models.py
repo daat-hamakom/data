@@ -91,6 +91,10 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
             'document': ['pdf', 'txt'],
             'video': ['mp4', 'avi', 'mov']
         }
+        self.__gen_thumbnails__ = True
+        if self.id and Media.objects.get(id=self.id).file == self.file:
+            self.__gen_thumbnails__ = False
+
         if self.file:
             extension = self.file.split('.')[-1].lower()
             extensions = dict((v, k) for k in FILE_MAPPINGS for v in FILE_MAPPINGS[k])
