@@ -305,6 +305,9 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
     @property
     def icon(self):
+        if self.media_icon:
+            return self.media_icon.file
+
         first_media = self.media.filter(type='image').first()
         if first_media:
             return first_media.file
