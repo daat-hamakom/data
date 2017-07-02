@@ -105,6 +105,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(pre_save, sender=Media)
 def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
+    cache.delete('/api/events/')
     if instance.deleted:
         instance.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
 
