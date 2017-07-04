@@ -3,6 +3,7 @@ import os
 
 from datetime import datetime
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 
 
 def partial_date_validator(s):
@@ -28,3 +29,10 @@ def create_filename(dir):
         filename = '%s-%s.%s' % (name, ts, ext)
         return os.path.join(dir, filename)
     return wrapper
+
+
+# now cache delete includes subkeys
+def cache_delete_startswith(path):
+    for key in cache._cache.keys():
+        if key.startswith(path):
+            del cache.delete[key]

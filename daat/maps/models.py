@@ -14,7 +14,7 @@ from geoposition.fields import GeopositionField
 from s3direct.fields import S3DirectField
 from safedelete.models import safedelete_mixin_factory, DELETED_VISIBLE_BY_PK, SOFT_DELETE
 
-from daat.utils import partial_date_validator
+from daat.utils import partial_date_validator, cache_delete_startswith
 
 EDITING_MODE = (
         ('Edited', 'Edited'),
@@ -109,7 +109,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(pre_save, sender=Media)
 def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/events/')
+    cache_delete_startswith('/api/events/')
     if instance.deleted:
         instance.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
 
@@ -159,7 +159,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Project)
 def clear_project_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/projects/')
+    cache_delete_startswith('/api/projects/')
 
 
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -190,7 +190,7 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Place)
 def clear_place_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/places/')
+    cache_delete_startswith('/api/places/')
 
 
 class Person(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -222,7 +222,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Person)
 def clear_person_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/people/')
+    cache_delete_startswith('/api/people/')
 
 
 class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -251,7 +251,15 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Organization)
 def clear_organization_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/organizations/')
+    cache_delete_startswith('/api/organizations/')
+
+
+class DataSet(CreatorPermissionsMixin, SafeDeleteMixin):
+    name = models.CharField(max_length=20)
+    url = models.CharField(max_length=160, help_text="Without / and http://, example: draft.daat-hamakum.com")
+
+    def __str__(self):
+        return self.name
 
 
 class Event(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -265,6 +273,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     )
 
     published = models.BooleanField(default=False)
+    data_sets = models.ManyToManyField(DataSet, blank=True, related_name='datasets')
     project = models.ForeignKey(Project, related_name='events')
     title = models.CharField(max_length=160)
     subtitle = models.CharField(max_length=160, blank=True)
@@ -328,7 +337,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Event)
 def clear_event_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/events/')
+    cache_delete_startswith('/api/events/')
 
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -358,7 +367,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Annotation)
 def clear_annotation_cache(sender, instance=None, created=False, **kwargs):
-    cache.delete('/api/annotations/')
+    cache_delete_startswith('/api/annotations/')
 
 
 class Import(CreatorPermissionsMixin, SafeDeleteMixin):

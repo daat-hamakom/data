@@ -79,7 +79,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
 
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published', 'edit_mode', words_count)
     list_filter = ('project', 'published', 'creator')
-    filter_horizontal = ('people', 'organizations', 'media',)
+    filter_horizontal = ('data_sets', 'people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
     actions = [make_published]
     save_as = True
@@ -223,6 +223,11 @@ class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     }
 
 
+class DataSetAdmin(CreatorMixin, admin.ModelAdmin):
+    list_display = ('id', 'name', 'url')
+    exclude = ('deleted',)
+
+
 class ImportAdmin(CreatorMixin, admin.ModelAdmin):
     change_form_template = 'admin/import_form.html'
 
@@ -300,4 +305,5 @@ admin.site.register(Place, PlaceAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Researcher, ResearcherAdmin)
 admin.site.register(Annotation, AnnotationAdmin)
+admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(Import, ImportAdmin)
