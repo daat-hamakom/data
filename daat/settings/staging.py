@@ -63,9 +63,9 @@ AWS_STORAGE_BUCKET_NAME = environ.get('AWS_BUCKET_NAME')
 
 S3DIRECT_REGION = 'eu-west-1'
 S3DIRECT_DESTINATIONS = {
-    'import-zip': (create_filename, lambda u: u.is_authenticated(), ['application/zip', 'application/octet-stream']),
-    'import-csv': (create_filename, lambda u: u.is_authenticated(), ['text/csv']),
-    'media': ('media', lambda u: u.is_authenticated()),
+    'import-zip': (create_filename('import'), lambda u: u.is_authenticated(), ['application/zip', 'application/octet-stream']),
+    'import-csv': (create_filename('import'), lambda u: u.is_authenticated(), ['text/csv']),
+    'media': (create_filename('media'), lambda u: u.is_authenticated()),
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

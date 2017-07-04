@@ -20,9 +20,11 @@ def partial_date_validator(s):
             raise ValidationError('Invalid date {}'.format(s))
 
 
-def create_filename(filename):
-    name = filename.split('.')[0]
-    ext = filename.split('.')[-1]
-    ts = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = '%s-%s.%s' % (name, ts, ext)
-    return os.path.join('import', filename)
+def create_filename(dir):
+    def wrapper(filename):
+        name = filename.split('.')[0]
+        ext = filename.split('.')[-1]
+        ts = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = '%s-%s.%s' % (name, ts, ext)
+        return os.path.join(dir, filename)
+    return wrapper
