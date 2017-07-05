@@ -256,7 +256,7 @@ def clear_organization_cache(sender, instance=None, created=False, **kwargs):
 
 class DataSet(CreatorPermissionsMixin, SafeDeleteMixin):
     name = models.CharField(max_length=20)
-    url = models.CharField(max_length=160, help_text="Without / and http://, example: draft.daat-hamakum.com")
+    url = models.CharField(max_length=160, help_text="Without / and http://, example: draft.daat-hamakom.com")
 
     def __str__(self):
         return self.name
