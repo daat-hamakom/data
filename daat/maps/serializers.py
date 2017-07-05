@@ -7,7 +7,13 @@ class PlaceSerializer(serializers.ModelSerializer):
     events_count = serializers.SerializerMethodField()
 
     def get_events_count(self, obj):
-        return obj.events.count()
+        queryset = obj.events
+        dataset = self.context['request'].query_params.get('dataset', None)
+        if dataset is not None:
+            dataset_obj = DataSet.objects.filter(url=dataset).first()
+            if dataset_obj and dataset_obj.name != 'Draft':
+                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+        return queryset.count()
 
     class Meta:
         model = Place
@@ -33,7 +39,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     events_count = serializers.SerializerMethodField()
 
     def get_events_count(self, obj):
-        return obj.events.count()
+        queryset = obj.events
+        dataset = self.context['request'].query_params.get('dataset', None)
+        if dataset is not None:
+            dataset_obj = DataSet.objects.filter(url=dataset).first()
+            if dataset_obj and dataset_obj.name != 'Draft':
+                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+        return queryset.count()
 
     class Meta:
         model = Project
@@ -76,7 +88,13 @@ class FullPersonSerializer(serializers.ModelSerializer):
     events_count = serializers.SerializerMethodField()
 
     def get_events_count(self, obj):
-        return obj.events.count()
+        queryset = obj.events
+        dataset = self.context['request'].query_params.get('dataset', None)
+        if dataset is not None:
+            dataset_obj = DataSet.objects.filter(url=dataset).first()
+            if dataset_obj and dataset_obj.name != 'Draft':
+                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+        return queryset.count()
 
     class Meta:
         model = Person
@@ -90,7 +108,13 @@ class FullOrganizationSerializer(serializers.ModelSerializer):
     events_count = serializers.SerializerMethodField()
 
     def get_events_count(self, obj):
-        return obj.events.count()
+        queryset = obj.events
+        dataset = self.context['request'].query_params.get('dataset', None)
+        if dataset is not None:
+            dataset_obj = DataSet.objects.filter(url=dataset).first()
+            if dataset_obj and dataset_obj.name != 'Draft':
+                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+        return queryset.count()
 
     class Meta:
         model = Organization
