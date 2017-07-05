@@ -33,6 +33,10 @@ def create_filename(dir):
 
 # now cache delete includes subkeys
 def cache_delete_startswith(path):
-    for key in cache._cache.keys():
-        if key.startswith(path):
-            del cache.delete[key]
+    variables = os.environ
+    if 'PROD' not in variables and 'STAG' not in variables:
+        for key in cache._cache.keys():
+            if key.startswith(path):
+                del cache.delete[key]
+    else:
+        cache.delete_pattern(path+'*')
