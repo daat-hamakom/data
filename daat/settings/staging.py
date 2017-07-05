@@ -6,6 +6,7 @@ from ..utils import create_filename
 from .base import *
 
 ENV = 'stag'
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'daat-hamakom-data-staging.herokuapp.com'
@@ -46,6 +47,8 @@ CELERY_ALWAYS_EAGER = False
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_ROOT = str(PROJECT_DIR / 'staticroot')
 STATIC_URL = '/static/'
+MEDIA_ROOT = str(PROJECT_DIR / 'media')
+MEDIA_URL = '/media/'
 
 RAVEN_CONFIG = {
     'dsn': environ.get('RAVEN_DSN')
