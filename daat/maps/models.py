@@ -262,6 +262,11 @@ class DataSet(CreatorPermissionsMixin, SafeDeleteMixin):
         return self.name
 
 
+@receiver(post_save, sender=DataSet)
+def clear_event_cache(sender, instance=None, created=False, **kwargs):
+    cache_delete_startswith('/api/')
+
+
 class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     MAP_CONTEXTS = (
         ('neighbourhood', 'Neighbourhood'),
@@ -337,7 +342,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Event)
 def clear_event_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/events/')
+    cache_delete_startswith('/api/')
 
 
 class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
