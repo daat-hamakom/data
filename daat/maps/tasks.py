@@ -202,7 +202,7 @@ def execute_import(payload):
                                                                row.get('Description 2', None), row.get('Description 3', None))
 
                 event_dict['place'] = Place.objects.get(**extract_filter(row.get('Place VIAF', None)))
-                event_dict['tags'] = tags.split()
+                event_dict['tags'] = tags.split(',')
 
                 #  parse if
                 time = row.get('Time', None)
@@ -247,7 +247,7 @@ def execute_import(payload):
                                                                row.get('Description 2', None), row.get('Description 3', None))
 
                 event_dict['place'] = Place.objects.get(**extract_filter(row.get('Ref. Place VIAF', None)))
-                event_dict['tags'] = tags.split()
+                event_dict['tags'] = tags.split(',')
 
                 #  parse if
                 time = row.get('Ref. Time', None)
