@@ -12,7 +12,7 @@ class PlaceSerializer(serializers.ModelSerializer):
         if dataset is not None:
             dataset_obj = DataSet.objects.filter(url=dataset).first()
             if dataset_obj and dataset_obj.name != 'Draft':
-                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+                queryset = queryset.filter(event__data_sets__in=[dataset_obj.id])
         return queryset.count()
 
     class Meta:
@@ -44,7 +44,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         if dataset is not None:
             dataset_obj = DataSet.objects.filter(url=dataset).first()
             if dataset_obj and dataset_obj.name != 'Draft':
-                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+                queryset = queryset.filter(event__data_sets__in=[dataset_obj.id])
         return queryset.count()
 
     class Meta:
@@ -93,7 +93,7 @@ class FullPersonSerializer(serializers.ModelSerializer):
         if dataset is not None:
             dataset_obj = DataSet.objects.filter(url=dataset).first()
             if dataset_obj and dataset_obj.name != 'Draft':
-                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+                queryset = queryset.filter(event__data_sets__in=[dataset_obj.id])
         return queryset.count()
 
     class Meta:
@@ -113,7 +113,7 @@ class FullOrganizationSerializer(serializers.ModelSerializer):
         if dataset is not None:
             dataset_obj = DataSet.objects.filter(url=dataset).first()
             if dataset_obj and dataset_obj.name != 'Draft':
-                queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
+                queryset = queryset.filter(event__data_sets__in=[dataset_obj.id])
         return queryset.count()
 
     class Meta:
