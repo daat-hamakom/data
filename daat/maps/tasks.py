@@ -18,6 +18,7 @@ from celery import shared_task
 
 from django.conf import settings
 from .models import Import, Media, Place, Person, Event, Annotation, Project
+from daat.utils import cache_delete_startswith
 
 
 def gen_image_thumbnails(media):
@@ -321,6 +322,8 @@ def migrate_import(payload):
 
     import_object.status = 'migrated'
     import_object.save()
+    # clean cache after migration
+    cache_delete_startswith('/api/')
 
 
 @shared_task
