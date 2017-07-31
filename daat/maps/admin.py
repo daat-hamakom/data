@@ -112,7 +112,7 @@ class OrganizationAdmin(CreatorMixin, admin.ModelAdmin):
     words_count.short_description = 'Word Count'
 
     list_display = ('name', 'type', 'viaf_id', 'edit_mode', words_count)
-    list_filter = ('creator',)
+    list_filter = ('events__project', 'creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
 
@@ -134,7 +134,7 @@ class PersonAdmin(CreatorMixin, admin.ModelAdmin):
     words_count.short_description = 'Word Count'
 
     list_display = ('id', 'last_name', 'first_name', 'viaf_id', 'edit_mode', words_count)
-    list_filter = ('creator',)
+    list_filter = ('events__project', 'creator',)
     filter_horizontal = ('places',)
     exclude = ('deleted',)
     formfield_overrides = {

@@ -278,7 +278,6 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     )
 
     published = models.BooleanField(default=False)
-    data_sets = models.ManyToManyField(DataSet, blank=True, related_name='datasets')
     project = models.ForeignKey(Project, related_name='events')
     title = models.CharField(max_length=160)
     subtitle = models.CharField(max_length=160, blank=True)
@@ -297,6 +296,7 @@ class Event(CreatorPermissionsMixin, SafeDeleteMixin):
     media_icon = models.ForeignKey(Media, blank=True, null=True, related_name='events_as_icon')
     next_event = models.ForeignKey('Event', blank=True, null=True)
     edit_mode = models.CharField(max_length=20, choices=EDITING_MODE, default='NotEdited')
+    data_sets = models.ManyToManyField(DataSet, blank=True, related_name='datasets')
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
