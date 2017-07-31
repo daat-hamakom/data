@@ -77,7 +77,12 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
             return '?'
     words_count.short_description = 'Word Count'
 
-    list_display = ('title', 'project', 'place', 'start_date', 'end_date', 'published', 'edit_mode', words_count)
+    def data_sets(self):
+        data_sets = ', '.join([data_set.name for data_set in self.data_sets.all()])
+        return data_sets
+    data_sets.short_description = 'Data Sets'
+
+    list_display = ('title', 'project', 'place', 'start_date', 'end_date', data_sets, 'edit_mode', words_count)
     list_filter = ('project', 'published', 'creator')
     filter_horizontal = ('data_sets', 'people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
