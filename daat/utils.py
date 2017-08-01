@@ -36,7 +36,7 @@ def cache_delete_startswith(path):
     variables = os.environ
     if 'PROD' not in variables and 'STAG' not in variables:
         for key in cache._cache.keys():
-            if key.startswith(path):
+            if path in key:
                 del cache.delete[key]
     else:
-        cache.delete_pattern(path+'*')
+        cache.delete_pattern('*' + path + '*')
