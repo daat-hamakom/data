@@ -109,7 +109,7 @@ class Media(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(pre_save, sender=Media)
 def create_media_thumbnails(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/events/')
+    cache_delete_startswith('/events/')
     if instance.deleted:
         instance.title += ' - ' + datetime.now().strftime("%Y%m%d%H%M%S")
 
@@ -159,7 +159,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Project)
 def clear_project_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/projects/')
+    cache_delete_startswith('/projects/')
 
 
 class Place(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -190,7 +190,7 @@ class Place(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Place)
 def clear_place_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/places/')
+    cache_delete_startswith('/places/')
 
 
 class Person(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -222,7 +222,7 @@ class Person(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Person)
 def clear_person_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/people/')
+    cache_delete_startswith('/people/')
 
 
 class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -251,7 +251,7 @@ class Organization(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Organization)
 def clear_organization_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/organizations/')
+    cache_delete_startswith('/organizations/')
 
 
 class DataSet(CreatorPermissionsMixin, SafeDeleteMixin):
@@ -372,7 +372,7 @@ class Annotation(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Annotation)
 def clear_annotation_cache(sender, instance=None, created=False, **kwargs):
-    cache_delete_startswith('/api/annotations/')
+    cache_delete_startswith('/annotations/')
 
 
 class Import(CreatorPermissionsMixin, SafeDeleteMixin):
