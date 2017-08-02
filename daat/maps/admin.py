@@ -6,6 +6,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.forms import ModelForm, TextInput, ChoiceField
 from django.db import models
 from django_select2.forms import Select2Widget, Select2TagWidget
+from django.contrib.admin.helpers import ActionForm
+from django import forms
 
 from .models import *
 from .tasks import execute_import, migrate_import
@@ -61,6 +63,10 @@ class EventForm(ModelForm):
         self.fields['media_icon'].queryset = Media.objects.filter(events__id=self.instance.pk)
 
 
+class UpdateActionForm(ActionForm):
+    dataset = forms.ModelChoiceField(DataSet.objects.all(), empty_label='-'*8)
+
+
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
 
     class Media:
@@ -82,11 +88,26 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
         return data_sets
     data_sets.short_description = 'Data Sets'
 
+    def add_to_dataset(modeladmin, request, queryset):
+        dataset_id = request.POST['dataset']
+        dataset = DataSet.objects.get(id=dataset_id)
+        for event in queryset:
+            event.data_sets.add(dataset)
+    add_to_dataset.short_description = 'Add events to dataset'
+
+    def remove_from_dataset(modeladmin, request, queryset):
+        dataset_id = request.POST['dataset']
+        dataset = DataSet.objects.get(id=dataset_id)
+        for event in queryset:
+            event.data_sets.remove(dataset)
+    remove_from_dataset.short_description = 'Remove events from dataset'
+
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', data_sets, 'edit_mode', words_count)
     list_filter = ('project', 'published', 'creator')
     filter_horizontal = ('data_sets', 'people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
-    actions = [make_published]
+    actions = [make_published, add_to_dataset, remove_from_dataset]
+    action_form = UpdateActionForm
     save_as = True
     form = EventForm
 
