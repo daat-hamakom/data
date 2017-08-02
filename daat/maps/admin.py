@@ -8,9 +8,11 @@ from django.db import models
 from django_select2.forms import Select2Widget, Select2TagWidget
 from django.contrib.admin.helpers import ActionForm
 from django import forms
+from django.contrib import messages
 
 from .models import *
 from .tasks import execute_import, migrate_import
+from daat.utils import cache_delete_startswith
 
 
 def make_published(modeladmin, request, queryset):
@@ -64,7 +66,7 @@ class EventForm(ModelForm):
 
 
 class UpdateActionForm(ActionForm):
-    dataset = forms.ModelChoiceField(DataSet.objects.all(), empty_label='-'*8)
+    dataset = forms.ModelChoiceField(DataSet.objects.all(), empty_label='-'*8, required=False)
 
 
 class EventAdmin(CreatorMixin, admin.ModelAdmin):
@@ -90,16 +92,22 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
 
     def add_to_dataset(modeladmin, request, queryset):
         dataset_id = request.POST['dataset']
+        if not dataset_id:
+            return messages.error(request, "Dataset must be selected")
         dataset = DataSet.objects.get(id=dataset_id)
         for event in queryset:
             event.data_sets.add(dataset)
+        cache_delete_startswith('/api/')
     add_to_dataset.short_description = 'Add events to dataset'
 
     def remove_from_dataset(modeladmin, request, queryset):
         dataset_id = request.POST['dataset']
+        if not dataset_id:
+            return messages.error(request, "Dataset must be selected")
         dataset = DataSet.objects.get(id=dataset_id)
         for event in queryset:
             event.data_sets.remove(dataset)
+        cache_delete_startswith('/api/')
     remove_from_dataset.short_description = 'Remove events from dataset'
 
     list_display = ('title', 'project', 'place', 'start_date', 'end_date', data_sets, 'edit_mode', words_count)
