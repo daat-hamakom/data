@@ -106,7 +106,7 @@ class EventAdmin(CreatorMixin, admin.ModelAdmin):
     list_filter = ('project', 'published', 'creator')
     filter_horizontal = ('data_sets', 'people', 'organizations', 'media',)
     exclude = ('deleted', 'subtitle')
-    actions = [make_published, add_to_dataset, remove_from_dataset]
+    actions = [add_to_dataset, remove_from_dataset]
     action_form = UpdateActionForm
     save_as = True
     form = EventForm
@@ -239,7 +239,7 @@ class AnnotationAdmin(CreatorMixin, admin.ModelAdmin):
     list_filter = ('events__project', 'published', 'creator')
     filter_horizontal = ('places', 'events', 'media')
     exclude = ('deleted', 'media')
-    actions = [make_published]
+    actions = []
     save_as = True
 
     formfield_overrides = {
