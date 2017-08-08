@@ -263,7 +263,7 @@ class DataSet(CreatorPermissionsMixin, SafeDeleteMixin):
 
 
 @receiver(post_save, sender=DataSet)
-def clear_event_cache(sender, instance=None, created=False, **kwargs):
+def clear_dataset_cache(sender, instance=None, created=False, **kwargs):
     cache_delete_startswith('/api/')
 
 
