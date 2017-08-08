@@ -27,7 +27,6 @@ class CacheViewSet(viewsets.ReadOnlyModelViewSet):
     # hotfix - timeout doesnt work
     def calculate_cache_key(self, view_instance, view_method,
                                 request, args, kwargs):
-        print(request.path + '?' + request.GET.urlencode())
         return request.path + '?' + request.GET.urlencode()
 
 
