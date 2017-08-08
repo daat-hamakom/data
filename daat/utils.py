@@ -39,6 +39,15 @@ def cache_delete_startswith(path):
             if path in key:
                 del cache.delete[key]
     else:
-        print(cache.keys('*' + path + '*'))
-        print(cache.keys(path + '*'))
+        try:
+            print(cache.keys('*'))
+            print(cache.keys(path + '*'))
+            print(cache.keys('*' + path + '*'))
+        except Exception:
+            pass
+        try:
+            for key in cache._cache.keys():
+                print(key)
+        except Exception:
+            pass
         cache.delete_pattern('*' + path + '*')
