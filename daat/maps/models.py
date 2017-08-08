@@ -159,6 +159,7 @@ class Project(CreatorPermissionsMixin, SafeDeleteMixin):
 
 @receiver(post_save, sender=Project)
 def clear_project_cache(sender, instance=None, created=False, **kwargs):
+    print(0)
     cache_delete_startswith('/projects/')
 
 
