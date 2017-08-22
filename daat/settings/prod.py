@@ -23,7 +23,7 @@ redis_url = urlparse(REDIS_URL)
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
-        'LOCATION': '{}:{}'.format(redis_url.hostname, redis_url.port),
+        'LOCATION': 'redis://{}:{}'.format(redis_url.hostname, redis_url.port),
         'OPTIONS': {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             'DB': 0,
