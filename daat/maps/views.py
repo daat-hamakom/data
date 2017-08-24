@@ -47,10 +47,10 @@ class EventViewSet(CacheViewSet):
                 queryset = queryset.filter(data_sets__in=[dataset_obj.id])
 
         queryset = self.get_serializer_class().setup_eager_loading(queryset)
-        return queryset
+        return queryset.all()
 
 
-class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectViewSet(CacheViewSet):
     queryset = Project.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = ProjectSerializer
 
@@ -63,10 +63,10 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
             if dataset_obj and dataset_obj.name != 'Draft':
                 queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
 
-        return queryset
+        return queryset.all()
 
 
-class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
+class AnnotationViewSet(CacheViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
@@ -79,10 +79,10 @@ class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
             if dataset_obj and dataset_obj.name != 'Draft':
                 queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
 
-        return queryset
+        return queryset.all()
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(CacheViewSet):
     queryset = Place.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = PlaceSerializer
 
@@ -95,10 +95,10 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
             if dataset_obj and dataset_obj.name != 'Draft':
                 queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
 
-        return queryset
+        return queryset.all()
 
 
-class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+class PersonViewSet(CacheViewSet):
     queryset = Person.objects.annotate(num_events=Count('events')).exclude(num_events=0).order_by('last_name')
     serializer_class = FullPersonSerializer
 
@@ -111,10 +111,10 @@ class PersonViewSet(viewsets.ReadOnlyModelViewSet):
             if dataset_obj and dataset_obj.name != 'Draft':
                 queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
 
-        return queryset
+        return queryset.all()
 
 
-class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
+class OrganizationViewSet(CacheViewSet):
     queryset = Organization.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = FullOrganizationSerializer
 
@@ -127,7 +127,7 @@ class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
             if dataset_obj and dataset_obj.name != 'Draft':
                 queryset = queryset.filter(events__data_sets__in=[dataset_obj.id])
 
-        return queryset
+        return queryset.all()
 
 
 
