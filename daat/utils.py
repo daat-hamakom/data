@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.cache import cache
+from django_redis import get_redis_connection
 
 
 def partial_date_validator(s):
@@ -39,4 +40,6 @@ def cache_delete_startswith(path):
             if path in key:
                 del cache.delete[key]
     else:
-        cache.delete_pattern(path + '*')
+        get_redis_connection("default").flushall()
+        # not working with large keys
+        # cache.delete_pattern(path + '*')
