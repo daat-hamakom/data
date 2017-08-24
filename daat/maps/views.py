@@ -17,17 +17,18 @@ MAX_CACHE_TIME = 3600
 
 #  todo - investigate why the timeout dont work
 class CacheViewSet(viewsets.ReadOnlyModelViewSet):
-    @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
-    def list(self, request):
-        response = super(CacheViewSet, self).list(request)
-        # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
-
-        return response
-
-    # hotfix - timeout doesnt work
-    def calculate_cache_key(self, view_instance, view_method,
-                                request, args, kwargs):
-        return request.path + '?' + request.GET.urlencode()
+    pass
+    # @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
+    # def list(self, request):
+    #     response = super(CacheViewSet, self).list(request)
+    #     # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
+    #
+    #     return response
+    #
+    # # hotfix - timeout doesnt work
+    # def calculate_cache_key(self, view_instance, view_method,
+    #                             request, args, kwargs):
+    #     return request.path + '?' + request.GET.urlencode()
 
 
 class EventViewSet(CacheViewSet):

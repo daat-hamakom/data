@@ -34,12 +34,14 @@ def create_filename(dir):
 
 # now cache delete includes subkeys
 def cache_delete_startswith(path):
+    return
     variables = os.environ
     if 'PROD' not in variables and 'STAG' not in variables:
         for key in cache._cache.keys():
             if path in key:
                 del cache.delete[key]
     else:
-        get_redis_connection("default").flushall()
+        # attempt to clear all db - didnt help
+        # get_redis_connection("default").flushall()
         # not working with large keys
-        # cache.delete_pattern(path + '*')
+        cache.delete_pattern(path + '*')
