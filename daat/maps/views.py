@@ -17,18 +17,17 @@ MAX_CACHE_TIME = 3600
 
 #  todo - investigate why the timeout dont work
 class CacheViewSet(viewsets.ReadOnlyModelViewSet):
-    pass
-    # @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
-    # def list(self, request):
-    #     response = super(CacheViewSet, self).list(request)
-    #     # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
-    #
-    #     return response
-    #
-    # # hotfix - timeout doesnt work
-    # def calculate_cache_key(self, view_instance, view_method,
-    #                             request, args, kwargs):
-    #     return request.path + '?' + request.GET.urlencode()
+    @cache_response(MAX_CACHE_TIME * 1,  key_func='calculate_cache_key')
+    def list(self, request):
+        response = super(CacheViewSet, self).list(request)
+        # response['Cache-Control'] = 'public, max-age=' + str(MAX_CACHE_TIME)
+
+        return response
+
+    # hotfix - timeout doesnt work
+    def calculate_cache_key(self, view_instance, view_method,
+                                request, args, kwargs):
+        return request.path + '?' + request.GET.urlencode()
 
 
 class EventViewSet(CacheViewSet):
@@ -51,7 +50,7 @@ class EventViewSet(CacheViewSet):
         return queryset
 
 
-class ProjectViewSet(CacheViewSet):
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Project.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = ProjectSerializer
 
@@ -67,7 +66,7 @@ class ProjectViewSet(CacheViewSet):
         return queryset
 
 
-class AnnotationViewSet(CacheViewSet):
+class AnnotationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
@@ -83,7 +82,7 @@ class AnnotationViewSet(CacheViewSet):
         return queryset
 
 
-class PlaceViewSet(CacheViewSet):
+class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = PlaceSerializer
 
@@ -99,7 +98,7 @@ class PlaceViewSet(CacheViewSet):
         return queryset
 
 
-class PersonViewSet(CacheViewSet):
+class PersonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.annotate(num_events=Count('events')).exclude(num_events=0).order_by('last_name')
     serializer_class = FullPersonSerializer
 
@@ -115,7 +114,7 @@ class PersonViewSet(CacheViewSet):
         return queryset
 
 
-class OrganizationViewSet(CacheViewSet):
+class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Organization.objects.annotate(num_events=Count('events')).exclude(num_events=0)
     serializer_class = FullOrganizationSerializer
 
