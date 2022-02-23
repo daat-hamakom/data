@@ -1,6 +1,7 @@
 # Da'at Hamakom Data Models and Backend Admin
 
 Django-based project running the Da'at Hamakom backend data models and admin panel.
+Usage of the project code and resources in this repository is under the conditions specified in LICENSE.txt as provided by Yissum, on behalf of the Hebrew University of Jerusalem.
 
 ## Dev
 
